@@ -12,12 +12,12 @@ import java.io.IOException;
 
 public class application extends Application {
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws Exception {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/pole_chudes/gamePage.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("mainPage.fxml"));
             Parent root = loader.load();
-            Scene scene = new Scene(root, 500, 500);
-
+            Scene scene = new Scene(root, 300, 300);
+            primaryStage.setTitle("Pole Chudes");
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch (IOException e) {

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?><?import java.util.*?><?import javafx.scene.*?><?import javafx.scene.control.*?><?import javafx.scene.layout.*?>
+
+<VBox
+    alignment="CENTER"
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="org.example.pole_chudes.mainPageController"
+    spacing="10"
+    >
+    <Button
+        maxWidth="150"
+        maxHeight="10"
+        fx:id="startGame"
+        text="Начать игру"
+        onAction="#startGame"/>
+    <Button
+        maxWidth="150"
+        maxHeight="10"
+        text="Настройки"
+        fx:id="settings"
+        onAction="#settings"
+    />
+</VBox>
