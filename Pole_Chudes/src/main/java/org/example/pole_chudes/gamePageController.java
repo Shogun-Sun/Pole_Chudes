@@ -33,22 +33,19 @@ public class gamePageController {
         Pane wheelPane = new Pane();
         wheelPane.setPrefSize(centerX * 2, centerY * 2);
 
-        // Добавление круга на панель
         wheelPane.getChildren().add(circle);
 
         // Создание секторов
         for (int i = 0; i < numSectors; i++) {
-            // Создание сектора
             Arc sector = new Arc(centerX, centerY, radius, radius, i * anglePerSector, anglePerSector);
             sector.setType(ArcType.ROUND);
             sector.setFill(i % 2 == 0 ? Color.BLUE : Color.WHITE);
-            // Добавление сектора на панель
+
             wheelPane.getChildren().add(sector);
         }
 
         // Создание текста
         for (int i = 0; i < numSectors; i++) {
-            // Создание текста
             Text text = new Text();
             text.setText("900");
             // Расчет координат для текста
@@ -66,11 +63,10 @@ public class gamePageController {
             // Поворот текста, чтобы он располагался вдоль сектора
             text.setRotate(Math.toDegrees(angle) + 0); // Поворот текста вдоль сектора
 
-            // Стиль для текста
+            // Стили для текста
             text.setStyle("-fx-font-size: 10px; -fx-font-weight: bold;");
-            text.setFill(Color.BLACK); // Цвет текста
+            text.setFill(Color.BLACK);
 
-            // Добавление текста на панель
             wheelPane.getChildren().add(text);
         }
 
@@ -79,11 +75,11 @@ public class gamePageController {
 
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.seconds(0.05), event -> {
-                    wheelPane.setRotate(wheelPane.getRotate() + 2); // Увеличиваем угол поворота
+                    wheelPane.setRotate(wheelPane.getRotate() + 2);
                 })
         );
-        timeline.setCycleCount(Timeline.INDEFINITE); // Бесконечный цикл анимации
-        timeline.play(); // Запуск анимации
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
 }
