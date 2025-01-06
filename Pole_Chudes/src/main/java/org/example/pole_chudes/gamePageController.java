@@ -13,7 +13,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 public class gamePageController {
@@ -22,6 +22,12 @@ public class gamePageController {
 
     public Timeline timeline;
     private List<String> sectorValues;
+
+    private double animationStart = 10;
+    private final double animationEnd = 0;
+    private double stepAnimation = 2;
+    private boolean isAnimationRunning = false;
+    private Random random = new Random();
 
     @FXML
     public void initialize() {
@@ -34,9 +40,12 @@ public class gamePageController {
         double anglePerSector = 360.0 / numSectors;
 
         // Черная обводка для барабана
+        Circle circleBorder = new Circle(centerX, centerY, radius);
+        circleBorder.setFill(Color.TRANSPARENT);
+        circleBorder.setStroke(Color.BLACK);
+
         Circle circle = new Circle(centerX, centerY, radius);
         circle.setFill(Color.TRANSPARENT);
-        circle.setStroke(Color.BLACK);
 
         //Стрелка
         Line line = new Line(310, 200, 330, 200);
@@ -92,29 +101,42 @@ public class gamePageController {
 
             wheelPane.getChildren().add(text);
         }
-        wheelPane.getChildren().add(circle);
+        wheelPane.getChildren().addAll(circleBorder, circle);
 
         // Добавление панели с барабаном и стрелки на основную панель
-        drumGroup.setLayoutX(100);
-        drumGroup.setLayoutY(200);
+        drumGroup.setLayoutX(50);
+        drumGroup.setLayoutY(50);
         drum.getChildren().add(drumGroup);
 
-        // Анимация вращения барабана
         timeline = new Timeline(
-
                 new KeyFrame(Duration.seconds(0.01), event -> {
-                    wheelPane.setRotate(wheelPane.getRotate() + 2);
+                    wheelPane.setRotate(wheelPane.getRotate() + animationStart);
+
+                    if (animationStart > animationEnd) {
+                        animationStart -= stepAnimation * 0.01;
+                    }
+                    if (animationStart <= animationEnd) {
+                        stopDrum(wheelPane, numSectors, anglePerSector);
+                        isAnimationRunning = false;
+                        wheelPane.getChildren().add(circle);
+
+
+                    }
                 })
         );
         timeline.setCycleCount(Timeline.INDEFINITE);
 
         circle.setOnMouseClicked(event -> {
-            timeline.play();
+            if(!isAnimationRunning){
+                wheelPane.getChildren().remove(circle);
+                animationStart = random.nextDouble(8, 14);
+                timeline.play();
+                isAnimationRunning = true;
+            }
+
         });
-
-
-        stopDrum(wheelPane, numSectors, anglePerSector);
     }
+
     private void stopDrum(Pane wheelPane, int numSecors, double anglePerSector) {
         timeline.stop();
 

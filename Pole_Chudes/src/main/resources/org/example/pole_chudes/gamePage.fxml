@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.Pane?>
 
 <?import javafx.scene.control.TextField?><?import javafx.scene.control.Label?><?import javafx.scene.shape.Circle?><?import javafx.scene.layout.Pane?>
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.pole_chudes.gamePageController" prefWidth="1920" prefHeight="1080">
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.pole_chudes.gamePageController" prefWidth="500" prefHeight="500">
         <Pane fx:id="drum" />
 
 </VBox>
