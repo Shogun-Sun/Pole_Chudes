@@ -1,7 +1,6 @@
 package org.example.pole_chudes;
 
 import javafx.animation.KeyFrame;
-import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
@@ -9,10 +8,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.shape.Polygon;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
+import org.example.pole_chudes.gamePageClasses.DrumElements;
+import org.example.pole_chudes.gamePageClasses.SectorTextCreator;
+import org.example.pole_chudes.gamePageClasses.SectorsCreating;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -20,8 +20,17 @@ public class gamePageController {
     @FXML
     private Pane drum;
 
+    @FXML
+    private Pane arrow;
+
     public Timeline timeline;
-    private List<String> sectorValues;
+   // private List<String> sectorTexts = new ArrayList<>();
+
+    private List<String> sectorTexts = List.of(
+            "100", "200", "Б", "500", "900", "1000", "Б", "300",
+            "400", "П", "800", "700", "600", "Б", "Б", "Ш",
+            "100", "Ш", "Ш", "200", "300", "Б", "Б", "500"
+    );
 
     private double animationStart = 10;
     private final double animationEnd = 0;
@@ -39,71 +48,20 @@ public class gamePageController {
         int numSectors = 24;
         double anglePerSector = 360.0 / numSectors;
 
-        // Черная обводка для барабана
-        Circle circleBorder = new Circle(centerX, centerY, radius);
-        circleBorder.setFill(Color.TRANSPARENT);
-        circleBorder.setStroke(Color.BLACK);
+        DrumElements drumElements = new DrumElements(centerX, centerY, radius);
 
-        Circle circle = new Circle(centerX, centerY, radius);
-        circle.setFill(Color.TRANSPARENT);
-
-        //Стрелка
-        Line line = new Line(310, 200, 330, 200);
-        line.setStroke(Color.BLACK);
-        line.setStrokeWidth(2);
-        Polygon arrowHead = new Polygon();
-        arrowHead.getPoints().addAll(
-                290.0, 200.0,
-                310.0, 210.0,
-                310.0, 190.0
-        );
-        arrowHead.setFill(Color.BLACK);
-
-        // Создание панели для барабана
+        // Панель для барабана
         Pane wheelPane = new Pane();
         wheelPane.setPrefSize(centerX * 2, centerY * 2);
 
         Group drumGroup = new Group();
-        drumGroup.getChildren().addAll(wheelPane, line, arrowHead);
+        drumGroup.getChildren().addAll(wheelPane, drumElements.getArrowLine(), drumElements.getArrowHead());
 
-        sectorValues = List.of(
-                "100", "200", "Б", "500", "900", "1000", "Б", "300",
-                "400", "П", "800", "700", "600", "Б", "Б", "Ш",
-                "100", "Ш", "Ш", "200", "300", "Б", "Б", "500"
-        );
+        SectorsCreating sectorsCreating = new SectorsCreating(numSectors, centerX, centerY, radius, anglePerSector, wheelPane);
+        wheelPane.getChildren().addAll(drumElements.getCircleBorder(), drumElements.getCircleClick());
 
-        // Создание секторов
-        for (int i = 0; i < numSectors; i++) {
-            Arc sector = new Arc(centerX, centerY, radius, radius, i * anglePerSector, anglePerSector);
-            sector.setType(ArcType.ROUND);
-            sector.setFill(i % 2 == 0 ? Color.BLUE : Color.WHITE);
+        SectorTextCreator sectorTextCreator = new SectorTextCreator(numSectors, anglePerSector, centerX, centerY, radius, wheelPane, sectorTexts);
 
-            wheelPane.getChildren().add(sector);
-        }
-
-        // Создание текста
-        for (int i = 0; i < numSectors; i++) {
-            Text text = new Text();
-            text.setText(sectorValues.get(i));
-            double angle = Math.toRadians(i * anglePerSector + anglePerSector / 2);
-            double textX = centerX + (radius * 0.8) * Math.cos(angle);
-            double textY = centerY + (radius * 0.8) * Math.sin(angle);
-
-            text.setX(textX);
-            text.setY(textY);
-
-            text.setTranslateX(-text.getBoundsInLocal().getWidth() / 2);
-            text.setTranslateY(text.getBoundsInLocal().getHeight() / 4);
-            text.setRotate(Math.toDegrees(angle) + 0); //поворот текста
-
-            text.setStyle("-fx-font-size: 10px; -fx-font-weight: bold;");
-            text.setFill(Color.BLACK);
-
-            wheelPane.getChildren().add(text);
-        }
-        wheelPane.getChildren().addAll(circleBorder, circle);
-
-        // Добавление панели с барабаном и стрелки на основную панель
         drumGroup.setLayoutX(50);
         drumGroup.setLayoutY(50);
         drum.getChildren().add(drumGroup);
@@ -116,9 +74,9 @@ public class gamePageController {
                         animationStart -= stepAnimation * 0.01;
                     }
                     if (animationStart <= animationEnd) {
-                        stopDrum(wheelPane, numSectors, anglePerSector);
+                        stopDrum(wheelPane, anglePerSector);
                         isAnimationRunning = false;
-                        wheelPane.getChildren().add(circle);
+                        wheelPane.getChildren().add(drumElements.getCircleClick());
 
 
                     }
@@ -126,18 +84,17 @@ public class gamePageController {
         );
         timeline.setCycleCount(Timeline.INDEFINITE);
 
-        circle.setOnMouseClicked(event -> {
+        drumElements.getCircleClick().setOnMouseClicked(event -> {
             if(!isAnimationRunning){
-                wheelPane.getChildren().remove(circle);
+                wheelPane.getChildren().remove(drumElements.getCircleClick());
                 animationStart = random.nextDouble(8, 14);
                 timeline.play();
                 isAnimationRunning = true;
             }
-
         });
     }
 
-    private void stopDrum(Pane wheelPane, int numSecors, double anglePerSector) {
+    private void stopDrum(Pane wheelPane, double anglePerSector) {
         timeline.stop();
 
         double rotation = wheelPane.getRotate() % 360;
@@ -146,7 +103,7 @@ public class gamePageController {
         double adjustedRotation = (360 - rotation) % 360;
         int sectorIndex = (int) (adjustedRotation / anglePerSector);
 
-        String selectedValue = sectorValues.get(sectorIndex);
+        String selectedValue = sectorTexts.get(sectorIndex);
         System.out.println("Значение сектора: " + selectedValue);
 
     }
