@@ -9,13 +9,19 @@ import java.util.List;
 import java.util.Random;
 
 public class AnimationManager {
-    public Timeline timeline;
+    private Runnable onAnimationEnd;
+
+    private Timeline timeline;
+
     private double animationStart = 10;
     private final double animationEnd = 0;
     private final double stepAnimation = 2;
     private boolean isAnimationRunning = false;
+
     private List <String> sectorTexts;
     private Random random = new Random();
+
+    private String selectedValue = "";
 
     public AnimationManager(
             Pane wheelPane,
@@ -57,9 +63,18 @@ public class AnimationManager {
 
         double adjustedRotation = (360 - rotation) % 360;
         int sectorIndex = (int) (adjustedRotation / anglePerSector);
+        selectedValue = sectorTexts.get(sectorIndex);
 
-        String selectedValue = sectorTexts.get(sectorIndex);
-        System.out.println("Значение сектора: " + selectedValue);
+        if (onAnimationEnd != null) {
+            onAnimationEnd.run();
+        }
+    }
 
+    public void setOnAnimationEnd(Runnable onAnimationEnd) {
+        this.onAnimationEnd = onAnimationEnd;
+    }
+
+    public String getSelectedValue(){
+        return selectedValue;
     }
 }

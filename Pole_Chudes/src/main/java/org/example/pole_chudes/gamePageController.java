@@ -2,6 +2,7 @@ package org.example.pole_chudes;
 
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 import org.example.pole_chudes.gamePageClasses.AnimationManager;
@@ -9,12 +10,29 @@ import org.example.pole_chudes.gamePageClasses.DrumElements;
 import org.example.pole_chudes.gamePageClasses.SectorTextCreator;
 import org.example.pole_chudes.gamePageClasses.SectorsCreating;
 
+import java.awt.*;
 import java.util.*;
 import java.util.List;
 
 public class gamePageController {
     @FXML
     private Pane drum;
+
+    @FXML
+    private Label pla1;
+
+    @FXML
+    private Label pla2;
+
+    @FXML
+    private Label pla3;
+
+    private int score = 0;
+    private String value;
+
+    static int scorepla1 = 0;
+    static int scorepla2 = 0;
+    static int scorepla3 = 0;
 
     private List<String> sectorTexts = List.of(
             "100", "200", "Б", "500", "900", "1000", "Б", "300",
@@ -51,5 +69,39 @@ public class gamePageController {
         drum.getChildren().add(drumGroup);
 
         AnimationManager animationManager = new AnimationManager(wheelPane, anglePerSector, sectorTexts, drumElements);
+        animationManager.setOnAnimationEnd(() -> {
+            try{
+                score = Integer.parseInt(animationManager.getSelectedValue());
+            } catch (NumberFormatException e){
+                value = animationManager.getSelectedValue();
+            }
+
+            if(value == null){
+                value = "";
+            }
+
+            switch (value){
+                case "Б":
+                    scorepla1 = 0;
+                    score = 0;
+                    pla1.setText("0");
+                    value = "";
+                    break;
+
+                case "Ш":
+
+                    break;
+
+                case "П":
+
+                    break;
+
+                default:
+                    scorepla1 += score;
+                    pla1.setText(String.valueOf(scorepla1));
+                    break;
+
+            }
+        });
     }
 }
