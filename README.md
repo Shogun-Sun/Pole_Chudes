@@ -1,4 +1,4 @@
-# "Wheel of Fortune"" Game
+# "Wheel of Fortune" Game
 
 This is a simple "Wheel of Fortune" game written in Java using JavaFX. In the game, players spin the wheel to earn points by guessing letters and words.
 
@@ -12,6 +12,5 @@ This is a simple "Wheel of Fortune" game written in Java using JavaFX. In the ga
    - You can download JavaFX from the official site: [JavaFX Downloads](https://openjfx.io/)
 
 ## Installation and Running
-
 
 ## How to Play
