@@ -5,11 +5,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.Group;
 import javafx.scene.layout.Pane;
-import org.example.pole_chudes.gamePageClasses.AnimationManager;
-import org.example.pole_chudes.gamePageClasses.DrumElements;
-import org.example.pole_chudes.gamePageClasses.SectorTextCreator;
-import org.example.pole_chudes.gamePageClasses.SectorsCreating;
+import org.example.pole_chudes.gamePageClasses.*;
 
+import javax.swing.text.LabelView;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -27,8 +25,21 @@ public class gamePageController {
     @FXML
     private Label pla3;
 
+    @FXML
+    private Label word;
+
+    @FXML
+    private Label definition;
+
     private int score = 0;
     private String value;
+
+    // Настройки барабана
+    private final double centerX = 200;
+    private final double centerY = 200;
+    private final double radius = 100;
+    private final int numSectors = 24;
+    private final double anglePerSector = 360.0 / numSectors;
 
     static int scorepla1 = 0;
     static int scorepla2 = 0;
@@ -42,15 +53,15 @@ public class gamePageController {
 
     @FXML
     public void initialize() {
-
-        // Настройки барабана
-        double centerX = 200;
-        double centerY = 200;
-        double radius = 100;
-        int numSectors = 24;
-        double anglePerSector = 360.0 / numSectors;
-
         DrumElements drumElements = new DrumElements(centerX, centerY, radius);
+
+        WordDefinitionManager wordDefinitionManager = new WordDefinitionManager();
+        word.setText(wordDefinitionManager.getWord());
+
+        definition.setPrefWidth(500);
+        definition.setStyle("-fx-border-color: black; -fx-border-width: 1px;");
+        definition.setText(wordDefinitionManager.getDefinition());
+        definition.setWrapText(true);
 
         // Панель для барабана
         Pane wheelPane = new Pane();
@@ -86,14 +97,6 @@ public class gamePageController {
                     score = 0;
                     pla1.setText("0");
                     value = "";
-                    break;
-
-                case "Ш":
-
-                    break;
-
-                case "П":
-
                     break;
 
                 default:

@@ -35,7 +35,6 @@ public class DrumElements {
                 310.0, 190.0
         );
         arrowHead.setFill(Color.BLACK);
-
     }
     public Circle getCircleBorder() {
         return circleBorder;
