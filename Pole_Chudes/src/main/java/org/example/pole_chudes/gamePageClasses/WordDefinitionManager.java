@@ -35,27 +35,21 @@ public class WordDefinitionManager {
 //            String randomWord = randomWordResponse.toString().replace("[", "").replace("]", "").replace("\"", "");
 //            System.out.println("Случайное слово: " + randomWord);
 //
-//
-//            // Формируем URL для поиска слова
 //            String testString = "apple";
 //            String url = String.format("https://dictionary.cambridge.org/ru/словарь/англо-русский/%s", testString);  //randomWord
 //
 //            // Получаем HTML-документ страницы
 //            Document doc = Jsoup.connect(url).get();
-//
-//            // Ищем элемент с определением слова
+
 //            Element definitionElement = doc.selectFirst(".def.ddef_d.db");
 //
 //            if (definitionElement != null) {
-//
-//                // Получаем текст без ссылок
 //                String definition = definitionElement.text();
 //                System.out.println("Определение: " + definition);
 //            } else {
 //                System.out.println("Определение не найдено.");
 //            }
-//
-//
+
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }

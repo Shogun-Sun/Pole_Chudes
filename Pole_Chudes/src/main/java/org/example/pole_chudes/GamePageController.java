@@ -1,18 +1,14 @@
 package org.example.pole_chudes;
 
-import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 import org.example.pole_chudes.gamePageClasses.*;
 
-import javax.swing.text.LabelView;
-import java.awt.*;
-import java.util.*;
 import java.util.List;
 
-public class gamePageController {
+public class GamePageController {
     @FXML
     private Pane drum;
 

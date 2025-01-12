@@ -5,7 +5,7 @@
 <VBox
     alignment="CENTER"
     xmlns:fx="http://javafx.com/fxml"
-    fx:controller="org.example.pole_chudes.mainPageController"
+    fx:controller="org.example.pole_chudes.MainPageController"
     spacing="10"
     >
     <Button
