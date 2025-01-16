@@ -1,5 +1,7 @@
 package org.example.pole_chudes;
 
+import com.sun.tools.javac.Main;
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -9,6 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 import org.example.pole_chudes.gamePageClasses.*;
 
 import javax.swing.plaf.synth.ColorType;
@@ -51,63 +54,64 @@ public class GamePageController {
 
     @FXML
     public void initialize() {
-        Const constants = new Const();
-        DrumElements drumElements = new DrumElements(constants.centerX, constants.centerY, constants.radius);
+        PauseTransition pause = new PauseTransition(Duration.millis(1));
+        pause.setOnFinished(event -> {
+            Const constants = new Const();
+            DrumElements drumElements = new DrumElements(constants.centerX, constants.centerY, constants.radius);
 
-        WordDefinitionManager wordDefinitionManager = new WordDefinitionManager();
+            WordDefinitionManager wordDefinitionManager = new WordDefinitionManager();
 
-        //word.setText(wordDefinitionManager.getWord());
-        square = new Rectangle(500, 500, 50, 50);
-        square.setFill(Color.RED);
-        square.setStroke(Color.BLACK);
+            //word.setText(wordDefinitionManager.getWord());
+            square = new Rectangle(500, 500, 50, 50);
+            square.setFill(Color.RED);
+            square.setStroke(Color.BLACK);
 
-        definition.setPrefWidth(500);
-        definition.setStyle("-fx-border-color: black; -fx-border-width: 1px;");
-        definition.setText(wordDefinitionManager.getDefinition());
-        definition.setWrapText(true);
+            definition.setPrefWidth(500);
+            definition.setStyle("-fx-border-color: black; -fx-border-width: 1px;");
+            definition.setText(wordDefinitionManager.getDefinition());
+            definition.setWrapText(true);
 
-        // Панель для барабана
-        Pane drumPane = new Pane();
-        drumPane.setPrefSize(constants.centerX * 2, constants.centerY * 2);
+            Pane drumPane = new Pane();
+            drumPane.setPrefSize(constants.centerX * 2, constants.centerY * 2);
 
-        Group drumGroup = new Group();
-        drumGroup.getChildren().addAll(drumPane, drumElements.getArrowLine(), drumElements.getArrowHead());
+            Group drumGroup = new Group();
+            drumGroup.getChildren().addAll(drumPane, drumElements.getArrowLine(), drumElements.getArrowHead());
 
-        new SectorsCreating(constants.numSectors, constants.centerX, constants.centerY, constants.radius, constants.anglePerSector, drumPane);
-        drumPane.getChildren().addAll(drumElements.getCircleBorder(), drumElements.getCircleClick());
+            new SectorsCreating(constants.numSectors, constants.centerX, constants.centerY, constants.radius, constants.anglePerSector, drumPane);
+            drumPane.getChildren().addAll(drumElements.getCircleBorder(), drumElements.getCircleClick());
 
-        new SectorTextCreator(constants.numSectors, constants.anglePerSector, constants.centerX, constants.centerY, constants.radius, drumPane, sectorTexts);
+            new SectorTextCreator(constants.numSectors, constants.anglePerSector, constants.centerX, constants.centerY, constants.radius, drumPane, sectorTexts);
 
-            drumGroup.setLayoutX(730);
-            drumGroup.setLayoutY(150);
-        wheelPane.getChildren().add(drumGroup);
+            wheelPane.getChildren().add(drumGroup);
 
-        AnimationManager animationManager = new AnimationManager(drumPane, constants.anglePerSector, sectorTexts, drumElements);
-        animationManager.setOnAnimationEnd(() -> {
-            try{
-                score = Integer.parseInt(animationManager.getSelectedValue());
-            } catch (NumberFormatException e){
-                value = animationManager.getSelectedValue();
-            }
+            AnimationManager animationManager = new AnimationManager(drumPane, constants.anglePerSector, sectorTexts, drumElements);
+            animationManager.setOnAnimationEnd(() -> {
+                try{
+                    score = Integer.parseInt(animationManager.getSelectedValue());
+                } catch (NumberFormatException e){
+                    value = animationManager.getSelectedValue();
+                }
 
-            if(value == null){
-                value = "";
-            }
-
-            switch (value){
-                case "Б":
-                    scorepla1 = 0;
-                    score = 0;
-                    pla1.setText("0");
+                if(value == null){
                     value = "";
-                    break;
+                }
 
-                default:
-                    scorepla1 += score;
-                    pla1.setText(String.valueOf(scorepla1));
-                    break;
+                switch (value){
+                    case "Б":
+                        scorepla1 = 0;
+                        score = 0;
+                        pla1.setText("0");
+                        value = "";
+                        break;
 
-            }
+                    default:
+                        scorepla1 += score;
+                        pla1.setText(String.valueOf(scorepla1));
+                        break;
+
+                }
+            });
         });
+        pause.play();
     }
 }

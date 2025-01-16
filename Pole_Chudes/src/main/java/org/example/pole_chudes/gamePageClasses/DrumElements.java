@@ -23,7 +23,6 @@ public class DrumElements {
         // Область клика
         circleClick = new Circle(centerX, centerY, radius);
         circleClick.setFill(Color.TRANSPARENT);
-
         // Стрелка
         arrowLine = new Line(310, 200, 330, 200);
         arrowLine.setStroke(Color.BLACK);

@@ -2,10 +2,8 @@ package org.example.pole_chudes.gamePageClasses;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
-import org.example.pole_chudes.GamePageController;
 
 import java.util.List;
 import java.util.Random;
@@ -14,7 +12,6 @@ public class AnimationManager {
     private Runnable onAnimationEnd;
 
     private Timeline timeline;
-
     private double animationStart = 10;
     private final double animationEnd = 0;
     private final double stepAnimation = 2;

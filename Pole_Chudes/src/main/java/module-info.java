@@ -4,6 +4,7 @@ module org.example.pole_chudes {
     requires java.desktop;
     requires org.jsoup;
     requires org.json;
+    requires jdk.compiler;
 
     opens org.example.pole_chudes to javafx.fxml;
     exports org.example.pole_chudes;
