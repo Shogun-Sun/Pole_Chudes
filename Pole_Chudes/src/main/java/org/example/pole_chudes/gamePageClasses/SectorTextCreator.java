@@ -1,5 +1,6 @@
 package org.example.pole_chudes.gamePageClasses;
 
+import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -13,7 +14,7 @@ public class SectorTextCreator {
             double centerX,
             double centerY,
             double radius,
-            Pane wheelPane,
+            Pane whellPane,
             List<String> sectorTexts) {
 
         for (int i = 0; i < numSectors; i++) {
@@ -27,7 +28,7 @@ public class SectorTextCreator {
                     sectorTexts.get(i),
                     angle
             );
-            wheelPane.getChildren().add(sectorText.getText());
+            whellPane.getChildren().add(sectorText.getText());
         }
 
     }

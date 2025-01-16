@@ -18,9 +18,10 @@ public class MainPageController {
                 .getResource("gamePage.fxml"));
         Parent root = loader.load();
 
-        Scene gameScene = new Scene(root);
+        Scene gameScene = new Scene(root, 960, 540);
         Stage currentStage = (Stage) startGame.getScene().getWindow();
         currentStage.setScene(gameScene);
+        currentStage.setResizable(false);
     }
 
     @FXML

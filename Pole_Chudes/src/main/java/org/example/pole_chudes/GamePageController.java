@@ -1,16 +1,22 @@
 package org.example.pole_chudes;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.Group;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import org.example.pole_chudes.gamePageClasses.*;
 
+import javax.swing.plaf.synth.ColorType;
 import java.util.List;
 
 public class GamePageController {
     @FXML
-    private Pane drum;
+    private Pane wheelPane;
 
     @FXML
     private Label pla1;
@@ -22,7 +28,7 @@ public class GamePageController {
     private Label pla3;
 
     @FXML
-    private Label word;
+    private Pane word;
 
     @FXML
     private Label definition;
@@ -30,12 +36,8 @@ public class GamePageController {
     private int score = 0;
     private String value;
 
-    // Настройки барабана
-    private final double centerX = 200;
-    private final double centerY = 200;
-    private final double radius = 100;
-    private final int numSectors = 24;
-    private final double anglePerSector = 360.0 / numSectors;
+    private Rectangle square;
+    private Rectangle hideSquare;
 
     static int scorepla1 = 0;
     static int scorepla2 = 0;
@@ -49,10 +51,15 @@ public class GamePageController {
 
     @FXML
     public void initialize() {
-        DrumElements drumElements = new DrumElements(centerX, centerY, radius);
+        Const constants = new Const();
+        DrumElements drumElements = new DrumElements(constants.centerX, constants.centerY, constants.radius);
 
         WordDefinitionManager wordDefinitionManager = new WordDefinitionManager();
-        word.setText(wordDefinitionManager.getWord());
+
+        //word.setText(wordDefinitionManager.getWord());
+        square = new Rectangle(500, 500, 50, 50);
+        square.setFill(Color.RED);
+        square.setStroke(Color.BLACK);
 
         definition.setPrefWidth(500);
         definition.setStyle("-fx-border-color: black; -fx-border-width: 1px;");
@@ -60,22 +67,22 @@ public class GamePageController {
         definition.setWrapText(true);
 
         // Панель для барабана
-        Pane wheelPane = new Pane();
-        wheelPane.setPrefSize(centerX * 2, centerY * 2);
+        Pane drumPane = new Pane();
+        drumPane.setPrefSize(constants.centerX * 2, constants.centerY * 2);
 
         Group drumGroup = new Group();
-        drumGroup.getChildren().addAll(wheelPane, drumElements.getArrowLine(), drumElements.getArrowHead());
+        drumGroup.getChildren().addAll(drumPane, drumElements.getArrowLine(), drumElements.getArrowHead());
 
-        SectorsCreating sectorsCreating = new SectorsCreating(numSectors, centerX, centerY, radius, anglePerSector, wheelPane);
-        wheelPane.getChildren().addAll(drumElements.getCircleBorder(), drumElements.getCircleClick());
+        new SectorsCreating(constants.numSectors, constants.centerX, constants.centerY, constants.radius, constants.anglePerSector, drumPane);
+        drumPane.getChildren().addAll(drumElements.getCircleBorder(), drumElements.getCircleClick());
 
-        SectorTextCreator sectorTextCreator = new SectorTextCreator(numSectors, anglePerSector, centerX, centerY, radius, wheelPane, sectorTexts);
+        new SectorTextCreator(constants.numSectors, constants.anglePerSector, constants.centerX, constants.centerY, constants.radius, drumPane, sectorTexts);
 
-        drumGroup.setLayoutX(50);
-        drumGroup.setLayoutY(50);
-        drum.getChildren().add(drumGroup);
+            drumGroup.setLayoutX(730);
+            drumGroup.setLayoutY(150);
+        wheelPane.getChildren().add(drumGroup);
 
-        AnimationManager animationManager = new AnimationManager(wheelPane, anglePerSector, sectorTexts, drumElements);
+        AnimationManager animationManager = new AnimationManager(drumPane, constants.anglePerSector, sectorTexts, drumElements);
         animationManager.setOnAnimationEnd(() -> {
             try{
                 score = Integer.parseInt(animationManager.getSelectedValue());
