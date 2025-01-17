@@ -15,6 +15,7 @@ public class DrumElements {
             double centerY,
             double radius
     ) {
+        Const consts = new Const();
         // Черная обводка для барабана
         circleBorder = new Circle(centerX, centerY, radius);
         circleBorder.setFill(Color.TRANSPARENT);
@@ -24,14 +25,14 @@ public class DrumElements {
         circleClick = new Circle(centerX, centerY, radius);
         circleClick.setFill(Color.TRANSPARENT);
         // Стрелка
-        arrowLine = new Line(310, 200, 330, 200);
+        arrowLine = new Line(consts.centerX, consts.centerY, consts.centerX, consts.centerY-40);
         arrowLine.setStroke(Color.BLACK);
         arrowLine.setStrokeWidth(2);
         arrowHead = new Polygon();
         arrowHead.getPoints().addAll(
-                290.0, 200.0,
-                310.0, 210.0,
-                310.0, 190.0
+                consts.centerX, consts.centerY-60,
+                consts.centerX-10, consts.centerY-40,
+                consts.centerX+10, consts.centerY-40
         );
         arrowHead.setFill(Color.BLACK);
     }

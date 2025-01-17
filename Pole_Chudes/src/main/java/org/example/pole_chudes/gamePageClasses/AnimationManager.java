@@ -28,6 +28,7 @@ public class AnimationManager {
             List <String> sectorTexts,
             DrumElements drumElements
     ) {
+        wheelPane.setRotate(0);
         this.sectorTexts = sectorTexts;
         timeline = new Timeline(
                 new KeyFrame(Duration.seconds(0.01), event -> {
@@ -58,10 +59,16 @@ public class AnimationManager {
         timeline.stop();
 
         double rotation = wheelPane.getRotate() % 360;
+        System.out.println(rotation);
 //        if (rotation < 0) rotation += 360; //Если колесо крутиться против часовой
 
-        double adjustedRotation = (360 - rotation) % 360;
-        int sectorIndex = (int) (adjustedRotation / anglePerSector);
+        double adjustedRotation = (263 - rotation) % 360;
+        if (adjustedRotation < 0) {
+            adjustedRotation += 360;
+        }
+        System.out.println(adjustedRotation);
+        int sectorIndex = (int) Math.round(adjustedRotation / anglePerSector);
+        System.out.println(sectorIndex);
         selectedValue = sectorTexts.get(sectorIndex);
 
         if (onAnimationEnd != null) {
