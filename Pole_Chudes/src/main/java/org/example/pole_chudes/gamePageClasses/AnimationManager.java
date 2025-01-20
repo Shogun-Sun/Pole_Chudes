@@ -2,9 +2,11 @@ package org.example.pole_chudes.gamePageClasses;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
+import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.Random;
 
@@ -45,6 +47,9 @@ public class AnimationManager {
                     }
                 })
         );
+
+        drumElements.getCircleClick().setFocusTraversable(true);
+
         timeline.setCycleCount(Timeline.INDEFINITE);
         drumElements.getCircleClick().setOnMouseClicked(event -> {
             if(!isAnimationRunning){
@@ -52,6 +57,16 @@ public class AnimationManager {
                 animationStart = random.nextDouble(8, 14);
                 timeline.play();
                 isAnimationRunning = true;
+            }
+        });
+        drumElements.getCircleClick().setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.SPACE) {
+                if (!isAnimationRunning) {
+                    wheelPane.getChildren().remove(drumElements.getCircleClick());
+                    animationStart = random.nextDouble(8, 14);
+                    timeline.play();
+                    isAnimationRunning = true;
+                }
             }
         });
     }

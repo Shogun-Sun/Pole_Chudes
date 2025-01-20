@@ -10,8 +10,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.AnchorPane?>
+
 <Pane xmlns:fx="http://javafx.com/fxml"
     fx:controller="org.example.pole_chudes.GamePageController">
+        <Pane fx:id="wheelPane"/>
+
         <HBox alignment="CENTER" spacing="50">
                 <VBox>
                         <Label text="Player One"/>
@@ -34,11 +37,11 @@
         </HBox>
 
         <HBox alignment="CENTER">
-<!--                <Pane fx:id="arrow" maxHeight="100" maxWidth="100"/>-->
         </HBox>
 
-        <HBox spacing="10" prefWidth="1920" alignment="CENTER">
+        <Pane fx:id="definitionContainer" >
                 <Label fx:id="definition"/>
-        </HBox>
-                <Pane fx:id="wheelPane"/>
+        </Pane>
+    <Pane fx:id="lettersPlace"/>
+    <Pane fx:id="wordPlace"/>
 </Pane>

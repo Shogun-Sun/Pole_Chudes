@@ -8,8 +8,8 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 public class MainPageController {
-    private double gameSceneX = 840;
-    private double gameSceneY = 540;
+    private double gameSceneX = 840;  //840
+    private double gameSceneY = 540;    //540
     public static Stage currentStage;
 
     @FXML
@@ -24,6 +24,7 @@ public class MainPageController {
         Scene gameScene = new Scene(root, gameSceneX, gameSceneY);
         currentStage = (Stage) startGame.getScene().getWindow();
         currentStage.setScene(gameScene);
+        currentStage.setResizable(false);
     }
 
     @FXML

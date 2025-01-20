@@ -1,25 +1,31 @@
 package org.example.pole_chudes;
 
-import com.sun.tools.javac.Main;
+
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.Group;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import org.example.pole_chudes.customcomponents.WordPanel;
 import org.example.pole_chudes.gamePageClasses.*;
-
-import javax.swing.plaf.synth.ColorType;
 import java.util.List;
+
 
 public class GamePageController {
     @FXML
     private Pane wheelPane;
+
+    @FXML
+    private Pane wordPlace;
+
+    @FXML
+    private Pane lettersPlace;
+
+    @FXML
+    private Pane definitionContainer;
 
     @FXML
     private Label pla1;
@@ -39,6 +45,8 @@ public class GamePageController {
     private int score = 0;
     private String value;
 
+    private String letter = "а";
+
     private Rectangle square;
     private Rectangle hideSquare;
 
@@ -54,22 +62,38 @@ public class GamePageController {
 
     @FXML
     public void initialize() {
-        PauseTransition pause = new PauseTransition(Duration.millis(1));
-        pause.setOnFinished(event -> {
+//        PauseTransition pause = new PauseTransition(Duration.millis(1));
+//        pause.setOnFinished(event -> {
             Const constants = new Const();
             DrumElements drumElements = new DrumElements(constants.centerX, constants.centerY, constants.radius);
 
             WordDefinitionManager wordDefinitionManager = new WordDefinitionManager();
 
             //word.setText(wordDefinitionManager.getWord());
-            square = new Rectangle(500, 500, 50, 50);
-            square.setFill(Color.RED);
-            square.setStroke(Color.BLACK);
+        //Панель для слова
+            WordPanel wordPanel = new WordPanel(wordDefinitionManager.getWord(), true);
+            wordPlace.setLayoutX(constants.centerX/2);
+            wordPlace.setLayoutY(constants.centerY-200);
+            wordPlace.getChildren().add(wordPanel);
+            List<Rectangle> squares = wordPanel.getSquares();
 
-            definition.setPrefWidth(500);
+
+        //Панель для выбора буквы
+            WordPanel wordPanelLetter = new WordPanel("абвгдеёжзийклмнопрстуфхцчшщъыьэюя", false);
+            lettersPlace.setLayoutX(0);
+            lettersPlace.setLayoutY(constants.centerY+249);
+            lettersPlace.getChildren().add(wordPanelLetter);
+
+
+
+
+
+            definition.setPrefWidth(230);
             definition.setStyle("-fx-border-color: black; -fx-border-width: 1px;");
             definition.setText(wordDefinitionManager.getDefinition());
             definition.setWrapText(true);
+            definitionContainer.setLayoutX(constants.centerX+170);
+            definitionContainer.setLayoutY(constants.centerY-100);
 
             Pane drumPane = new Pane();
             drumPane.setPrefSize(constants.centerX * 2, constants.centerY * 2);
@@ -111,7 +135,7 @@ public class GamePageController {
 
                 }
             });
-        });
-        pause.play();
+//        });
+//        pause.play();
     }
 }

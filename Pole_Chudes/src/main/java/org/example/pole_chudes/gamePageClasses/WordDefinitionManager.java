@@ -108,9 +108,13 @@ public class WordDefinitionManager {
 
                 for (Element entry : entries) {
                     String potentialWord = entry.select("k").text().trim().toLowerCase();
+                    String potentialDefinition = entry.text().trim();
 
                     if (potentialWord.split("\\s+").length == 1 &&
-                        !potentialWord.contains("см. ")) {
+                        !potentialWord.contains("см. ") &&
+                            potentialWord.length() <= 7 &&
+                            potentialDefinition.length() <= 300
+                    ) {
                             validEntries.add(entry);
                     }
                 }
@@ -120,11 +124,19 @@ public class WordDefinitionManager {
 
                     word = randomEntry.select("k").text().trim().toLowerCase();
                     definition = randomEntry.text()
-                            .replaceFirst(word, "")
-                            .replaceAll("^[^\\-]*-\\s*", "")
+                            .replaceAll(word, "")
+                            .replaceAll(word.toUpperCase(), "")
+
+                            .replaceAll("(?i)" + word.substring(0, word.length() - 1) + "[а-яА-Я]?[а-яА-Я]*", "***")
+                            .replaceAll("(?i)" + word + "(?:[а-яА-Я]+)?", "***")
+
+                            .replaceAll("[^\\- ]*-\\s*", "")
+//                            .replaceAll("\\b\\d{1,2}[^\\s]*|[^\\s]*\\d{1,2}\\b", "")
                             .replaceAll("\\s*\\([^)]*\\)", "")
+                            .replaceAll("\\s*\\((?:(?!\\b\\d{3,4}\\b)[^)]*)\\)", "")
                             .replaceAll("[a-zA-Z]", "")
                             .trim();
+
 
                 } else {
                     System.out.println("Нету нужных записей");
