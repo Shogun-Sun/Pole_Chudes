@@ -11,31 +11,39 @@ import java.util.List;
 
 public class WordPanel extends Pane {
 
-    private List<Rectangle> squares = new ArrayList<>();
+    private List<Rectangle> squaresWord = new ArrayList<>();
+    private List<Rectangle> squaresLetter = new ArrayList<>();
 
-    public WordPanel(String word, boolean answer) {
-        createSquares(word, answer);
+    private List<Label> labelsWord = new ArrayList<>();
+    private List<Label> labelsLetter = new ArrayList<>();
+
+
+    private String guesWord;
+
+    public WordPanel(String word, String letters, boolean answer) {
+        createSquares(word, letters, answer);
+
+
     }
 
-    private void createSquares(String word, boolean answer) {
-        this.getChildren().clear();
-        squares.clear();
-
-        if(answer) {
-            int squareSize = 30;
-            int spacing = 10;
-            createText(word, squareSize, spacing);
-            createSquare(word, squareSize, spacing, Color.BLUE, true);
-        } else{
-            int squareSize = 20;
-            double spacing = 5.5;
-            createText(word, squareSize, spacing);
-            createSquare(word, squareSize, spacing, Color.TRANSPARENT, false);
-        }
+    private void createSquares(String word, String letters, boolean answer) {
+        //this.getChildren().clear();
+            guesWord = word;
+            if (answer) {
+                int squareSize = 30;
+                int spacing = 8;
+                createText(word, squareSize, spacing, true);
+                createSquareWord(word, squareSize, spacing);
+            } else {
+                int squareSize = 20;
+                double spacing = 5.5;
+                createText(letters, squareSize, spacing, false );
+                createSquareLetter(letters, squareSize, spacing);
+            }
     }
-    private void createText(String word, int squareSize, double spacing) {
-        for (int i = 0; i < word.length(); i++) {
-            Label word_text = new Label(String.valueOf(word.charAt(i)));
+    private void createText(String text, int squareSize, double spacing, boolean varLabel) {
+        for (int i = 0; i < text.length(); i++) {
+            Label word_text = new Label(String.valueOf(text.charAt(i)));
             word_text.setFont(new Font("Arial", 20));
             word_text.setStyle("-fx-border-color: black");
             word_text.setTextFill(Color.BLACK);
@@ -46,34 +54,52 @@ public class WordPanel extends Pane {
             word_text.setStyle("-fx-alignment: center;");
 
             this.getChildren().add(word_text);
+
+            if(varLabel){
+                labelsWord.add(word_text);
+            } else{
+                labelsLetter.add(word_text);
+            }
+
         }
     }
-    private void createSquare(String word, int squareSize, double spacing, Color color, boolean varSquare) {
-        for (int i = 0; i < word.length(); i++) {
-            String text = String.valueOf(word.charAt(i));
+    private void createSquareWord(String text, int squareSize, double spacing) {
+        for (int i = 0; i < text.length(); i++) {
             Rectangle square = new Rectangle(squareSize, squareSize);
-            square.setFill(color);
-            square.setStyle("-fx-background-color: blue");
+            square.setFill(Color.BLUE);
             square.setStroke(Color.BLACK);
             square.setX(i * (squareSize + spacing));
             square.setY(0);
 
-            if(varSquare == true){
-                clickWordSquare(square, i);
-            } else{
-                clickLetterSquare(square, text);
-            }
-
+                squaresWord.add(square);
+                clickWordSquare(square);
 
 
             this.getChildren().add(square);
-            squares.add(square);
         }
+        System.out.println("Final squaresWord size: " + squaresWord.size());
     }
 
-    private void clickWordSquare(Rectangle square, int finalI) {
+    private void createSquareLetter(String text, int squareSize, double spacing) {
+        for (int i = 0; i < text.length(); i++) {
+            String letters = String.valueOf(text.charAt(i));
+
+            Rectangle square = new Rectangle(squareSize, squareSize);
+            square.setFill(Color.TRANSPARENT);
+            square.setStroke(Color.BLACK);
+            square.setX(i * (squareSize + spacing));
+            square.setY(0);
+
+                squaresLetter.add(square);
+                clickLetterSquare(square, letters);
+
+            this.getChildren().add(square);
+        }
+        System.out.println("Final squaresLetter size: " + squaresLetter.size());
+    }
+
+    private void clickWordSquare(Rectangle square) {
         square.setOnMouseClicked(event -> {
-            System.out.println("Клик на квадрате " + finalI);
             square.setFill(Color.TRANSPARENT);
         });
     }
@@ -81,11 +107,27 @@ public class WordPanel extends Pane {
     private void clickLetterSquare(Rectangle square, String letter) {
         square.setOnMouseClicked(event -> {
             System.out.println("Клик на квадрате " + letter);
-            square.setFill(Color.TRANSPARENT);
+            if(guesWord.contains(letter)){
+                System.out.println("Есть такая буква " + letter);
+//                for(int i = 0; i< guesWord.length(); i++){
+//                    if(String.valueOf(guesWord.charAt(i)).equals(letter)){
+//                        Rectangle squareToTransparent = squaresWord.get(i);
+//                        squareToTransparent.setFill(Color.TRANSPARENT);
+//                    }
+//                }
+
+            } else{
+                System.out.println("Нет такой буквы " + letter);
+            }
+            int index = squaresLetter.indexOf(square);
+            if (index != -1) {
+                Label remLabel = labelsLetter.get(index);
+                this.getChildren().removeAll(square, remLabel);
+            }
         });
     }
-
-    public List<Rectangle> getSquares() {
-        return squares;
+    public void checkList(){
+        System.out.println(squaresWord.size());
+        System.out.println(squaresLetter.size());
     }
 }

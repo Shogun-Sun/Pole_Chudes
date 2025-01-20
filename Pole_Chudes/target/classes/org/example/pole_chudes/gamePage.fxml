@@ -44,4 +44,5 @@
         </Pane>
     <Pane fx:id="lettersPlace"/>
     <Pane fx:id="wordPlace"/>
+
 </Pane>

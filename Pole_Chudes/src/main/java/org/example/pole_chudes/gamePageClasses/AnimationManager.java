@@ -5,6 +5,7 @@ import javafx.animation.Timeline;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
+import org.example.pole_chudes.customcomponents.WordPanel;
 
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -74,16 +75,13 @@ public class AnimationManager {
         timeline.stop();
 
         double rotation = wheelPane.getRotate() % 360;
-        System.out.println(rotation);
 //        if (rotation < 0) rotation += 360; //Если колесо крутиться против часовой
 
         double adjustedRotation = (263 - rotation) % 360;
         if (adjustedRotation < 0) {
             adjustedRotation += 360;
         }
-        System.out.println(adjustedRotation);
         int sectorIndex = (int) Math.round(adjustedRotation / anglePerSector);
-        System.out.println(sectorIndex);
         selectedValue = sectorTexts.get(sectorIndex);
 
         if (onAnimationEnd != null) {

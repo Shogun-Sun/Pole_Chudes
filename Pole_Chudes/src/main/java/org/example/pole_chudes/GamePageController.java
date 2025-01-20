@@ -60,6 +60,8 @@ public class GamePageController {
             "1200", "Ш", "Ш", "200", "1300", "Б", "Б", "1500"
     );
 
+    private String letters = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+
     @FXML
     public void initialize() {
 //        PauseTransition pause = new PauseTransition(Duration.millis(1));
@@ -71,23 +73,18 @@ public class GamePageController {
 
             //word.setText(wordDefinitionManager.getWord());
         //Панель для слова
-            WordPanel wordPanel = new WordPanel(wordDefinitionManager.getWord(), true);
+            WordPanel wordPanelWord = new WordPanel(wordDefinitionManager.getWord(), letters,true);
             wordPlace.setLayoutX(constants.centerX/2);
             wordPlace.setLayoutY(constants.centerY-200);
-            wordPlace.getChildren().add(wordPanel);
-            List<Rectangle> squares = wordPanel.getSquares();
-
+            wordPlace.getChildren().add(wordPanelWord);
 
         //Панель для выбора буквы
-            WordPanel wordPanelLetter = new WordPanel("абвгдеёжзийклмнопрстуфхцчшщъыьэюя", false);
+            WordPanel wordPanelLetter = new WordPanel(wordDefinitionManager.getWord(), letters, false);
             lettersPlace.setLayoutX(0);
-            lettersPlace.setLayoutY(constants.centerY+249);
+            lettersPlace.setLayoutY(constants.centerY+248);
             lettersPlace.getChildren().add(wordPanelLetter);
 
-
-
-
-
+        //Задание
             definition.setPrefWidth(230);
             definition.setStyle("-fx-border-color: black; -fx-border-width: 1px;");
             definition.setText(wordDefinitionManager.getDefinition());
@@ -95,19 +92,23 @@ public class GamePageController {
             definitionContainer.setLayoutX(constants.centerX+170);
             definitionContainer.setLayoutY(constants.centerY-100);
 
+        //Панель для барабана
             Pane drumPane = new Pane();
             drumPane.setPrefSize(constants.centerX * 2, constants.centerY * 2);
 
             Group drumGroup = new Group();
             drumGroup.getChildren().addAll(drumPane, drumElements.getArrowLine(), drumElements.getArrowHead());
 
+        //Создание секторов
             new SectorsCreating(constants.numSectors, constants.centerX, constants.centerY, constants.radius, constants.anglePerSector, drumPane);
             drumPane.getChildren().addAll(drumElements.getCircleBorder(), drumElements.getCircleClick());
 
+        //Создание текста на секторах
             new SectorTextCreator(constants.numSectors, constants.anglePerSector, constants.centerX, constants.centerY, constants.radius, drumPane, sectorTexts);
 
             wheelPane.getChildren().add(drumGroup);
 
+        //Анимация
             AnimationManager animationManager = new AnimationManager(drumPane, constants.anglePerSector, sectorTexts, drumElements);
             animationManager.setOnAnimationEnd(() -> {
                 try{
