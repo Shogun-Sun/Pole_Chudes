@@ -5,7 +5,6 @@ import javafx.animation.Timeline;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
-import org.example.pole_chudes.customcomponents.WordPanel;
 
 import java.awt.event.KeyEvent;
 import java.util.List;

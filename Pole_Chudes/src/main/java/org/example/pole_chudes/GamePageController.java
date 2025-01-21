@@ -1,15 +1,11 @@
 package org.example.pole_chudes;
 
 
-import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.Group;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
-import org.example.pole_chudes.customcomponents.WordPanel;
 import org.example.pole_chudes.gamePageClasses.*;
 import java.util.List;
 
@@ -60,7 +56,7 @@ public class GamePageController {
             "1200", "Ш", "Ш", "200", "1300", "Б", "Б", "1500"
     );
 
-    private String letters = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+    public String letters = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
 
     @FXML
     public void initialize() {
@@ -72,17 +68,22 @@ public class GamePageController {
             WordDefinitionManager wordDefinitionManager = new WordDefinitionManager();
 
             //word.setText(wordDefinitionManager.getWord());
-        //Панель для слова
-            WordPanel wordPanelWord = new WordPanel(wordDefinitionManager.getWord(), letters,true);
-            wordPlace.setLayoutX(constants.centerX/2);
-            wordPlace.setLayoutY(constants.centerY-200);
-            wordPlace.getChildren().add(wordPanelWord);
+
+        //Поле для загаданного слова
+        LabelsWordLetterCreating labelsWordLetterCreating = new LabelsWordLetterCreating(wordDefinitionManager.getWord(), 30, 8, wordPlace);
+        SquaresWordCreating squaresWordCreating = new SquaresWordCreating(wordDefinitionManager.getWord(), 30, 8, wordPlace);
 
         //Панель для выбора буквы
-            WordPanel wordPanelLetter = new WordPanel(wordDefinitionManager.getWord(), letters, false);
-            lettersPlace.setLayoutX(0);
-            lettersPlace.setLayoutY(constants.centerY+248);
-            lettersPlace.getChildren().add(wordPanelLetter);
+        LabelsLettersCreating labelsLettersCreating = new LabelsLettersCreating(letters, 20, 5.5, lettersPlace);
+        SquaresLettersCreating squaresLettersCreating = new SquaresLettersCreating(letters, wordDefinitionManager.getWord(), 20, 5.5, lettersPlace, labelsLettersCreating, squaresWordCreating, wordPlace);
+        lettersPlace.setLayoutX(0);
+        lettersPlace.setLayoutY(constants.centerY+248);
+
+        //Панель для слова
+            wordPlace.setLayoutX(constants.centerX/2);
+            wordPlace.setLayoutY(constants.centerY-200);
+
+
 
         //Задание
             definition.setPrefWidth(230);
