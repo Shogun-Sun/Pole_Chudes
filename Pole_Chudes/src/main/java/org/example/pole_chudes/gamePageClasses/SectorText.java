@@ -1,6 +1,7 @@
 package org.example.pole_chudes.gamePageClasses;
 
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class SectorText {
@@ -20,7 +21,7 @@ public class SectorText {
         text.setTranslateY(text.getBoundsInLocal().getHeight() / 4);
         text.setRotate(Math.toDegrees(angle) + 0);
 
-        text.setStyle("-fx-font-size: 10px; -fx-font-weight: bold;");
+        text.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
         text.setFill(Color.BLACK);
     }
 

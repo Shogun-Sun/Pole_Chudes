@@ -33,15 +33,10 @@ public class GamePageController {
     private Label pla3;
 
     @FXML
-    private Pane word;
-
-    @FXML
     private Label definition;
 
     private int score = 0;
     private String value;
-
-    private String letter = "а";
 
     private Rectangle square;
     private Rectangle hideSquare;
@@ -51,9 +46,9 @@ public class GamePageController {
     static int scorepla3 = 0;
 
     private List<String> sectorTexts = List.of(
-            "100", "200", "Б", "500", "900", "1000", "Б", "300",
-            "400", "П", "800", "700", "600", "Б", "Б", "Ш",
-            "1200", "Ш", "Ш", "200", "1300", "Б", "Б", "1500"
+            "100", "\uD83D\uDDDD", "☠", "500", "☎", "1000", "x2", "300",
+            "400", "П", "0", "+", "600", "700", "☠", "550",
+            "50", "☎", "+", "450", "250", "350", "150", "650"
     );
 
     public String letters = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
@@ -66,8 +61,6 @@ public class GamePageController {
             DrumElements drumElements = new DrumElements(constants.centerX, constants.centerY, constants.radius);
 
             WordDefinitionManager wordDefinitionManager = new WordDefinitionManager();
-
-            //word.setText(wordDefinitionManager.getWord());
 
         //Поле для загаданного слова
         LabelsWordLetterCreating labelsWordLetterCreating = new LabelsWordLetterCreating(wordDefinitionManager.getWord(), 30, 8, wordPlace);
@@ -98,7 +91,7 @@ public class GamePageController {
             drumPane.setPrefSize(constants.centerX * 2, constants.centerY * 2);
 
             Group drumGroup = new Group();
-            drumGroup.getChildren().addAll(drumPane, drumElements.getArrowLine(), drumElements.getArrowHead());
+            drumGroup.getChildren().addAll(drumPane, drumElements.getCircleMiddle(), drumElements.getArrowLine(), drumElements.getArrowHead());
 
         //Создание секторов
             new SectorsCreating(constants.numSectors, constants.centerX, constants.centerY, constants.radius, constants.anglePerSector, drumPane);
@@ -123,12 +116,40 @@ public class GamePageController {
                 }
 
                 switch (value){
-                    case "Б":
+                    case "☠":
+                        System.out.println("Увы, вы банкрот");
                         scorepla1 = 0;
                         score = 0;
                         pla1.setText("0");
                         value = "";
                         break;
+                    case "☎":
+                        System.out.println("Сектор шанс на барабане");
+                        score = 0;
+                        value = "";
+
+                        break;
+                    case "+":
+                        System.out.println("Сектор + на барабане, откройте любую букву");
+                        score = 0;
+                        value = "";
+                        break;
+
+                    case "\uD83D\uDDDD":
+                        System.out.println("Сектор ключ на барабане");
+                        score = 0;
+                        value = "";
+
+                    case "x2":
+                        scorepla1 = scorepla1 * 2;
+                        pla1.setText(String.valueOf(scorepla1));
+                        value = "";
+                        score = 0;
+
+                    case "П":
+                        System.out.println("Сектор приз на барабане");
+                        score = 0;
+                        value = "";
 
                     default:
                         scorepla1 += score;

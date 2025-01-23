@@ -2,6 +2,7 @@ package org.example.pole_chudes.gamePageClasses;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.fxml.FXML;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
@@ -11,6 +12,10 @@ import java.util.List;
 import java.util.Random;
 
 public class AnimationManager {
+
+    @FXML
+    Pane curtainPane;
+
     private Runnable onAnimationEnd;
 
     private Timeline timeline;
@@ -81,7 +86,11 @@ public class AnimationManager {
             adjustedRotation += 360;
         }
         int sectorIndex = (int) Math.round(adjustedRotation / anglePerSector);
+        if(sectorIndex == 24){
+            sectorIndex = 0;
+        }
         selectedValue = sectorTexts.get(sectorIndex);
+
 
         if (onAnimationEnd != null) {
             onAnimationEnd.run();

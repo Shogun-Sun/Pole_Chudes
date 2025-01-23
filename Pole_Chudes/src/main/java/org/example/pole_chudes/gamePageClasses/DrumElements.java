@@ -10,6 +10,7 @@ public class DrumElements {
     private Circle circleClick;
     private Line arrowLine;
     private Polygon arrowHead;
+    private Circle circleMiddle;
     public DrumElements(
             double centerX,
             double centerY,
@@ -21,9 +22,14 @@ public class DrumElements {
         circleBorder.setFill(Color.TRANSPARENT);
         circleBorder.setStroke(Color.BLACK);
 
+        //Середина
+        circleMiddle = new Circle(centerX, centerY, radius/12);
+        circleMiddle.setFill(Color.BLACK);
+
         // Область клика
         circleClick = new Circle(centerX, centerY, radius);
         circleClick.setFill(Color.TRANSPARENT);
+
         // Стрелка
         arrowLine = new Line(consts.centerX, consts.centerY, consts.centerX, consts.centerY-40);
         arrowLine.setStroke(Color.BLACK);
@@ -50,6 +56,10 @@ public class DrumElements {
 
     public Polygon getArrowHead() {
         return arrowHead;
+    }
+
+    public Circle getCircleMiddle() {
+        return circleMiddle;
     }
 
 }

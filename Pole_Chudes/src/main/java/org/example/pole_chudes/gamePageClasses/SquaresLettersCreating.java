@@ -1,9 +1,12 @@
 package org.example.pole_chudes.gamePageClasses;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +36,16 @@ public class SquaresLettersCreating {
                          result++;
                          if(result == guesWord.length()) {
                              System.out.println("Вы победили!");
+
+                             for (int k = 0; k < labelsLettersCreating.labelsLetter.size(); k++) {
+                                 int finalK = k;
+                                 Timeline timeline = new Timeline(new KeyFrame(Duration.millis((k + 1) * 50), even -> {
+                                     lettersPlace.getChildren().removeAll(squaresLetter.get(finalK), labelsLettersCreating.labelsLetter.get(finalK));
+                                 }));
+                                 timeline.setCycleCount(1);
+                                 timeline.play();
+                             }
+
                          }
 
                     }
