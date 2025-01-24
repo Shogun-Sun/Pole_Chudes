@@ -42,6 +42,8 @@
         <Pane fx:id="definitionContainer" >
                 <Label fx:id="definition"/>
         </Pane>
+
+    <Pane fx:id="arrowPane"/>
     <Pane fx:id="lettersPlace"/>
     <Pane fx:id="wordPlace"/>
     <Pane fx:id="curtainPane"/>

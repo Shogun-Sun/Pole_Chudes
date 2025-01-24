@@ -21,7 +21,13 @@ public class GamePageController {
     private Pane lettersPlace;
 
     @FXML
+    private Pane curtainPane;
+
+    @FXML
     private Pane definitionContainer;
+
+    @FXML
+    private Pane arrowPane;
 
     @FXML
     private Label pla1;
@@ -46,8 +52,8 @@ public class GamePageController {
     static int scorepla3 = 0;
 
     private List<String> sectorTexts = List.of(
-            "100", "\uD83D\uDDDD", "☠", "500", "☎", "1000", "x2", "300",
-            "400", "П", "0", "+", "600", "700", "☠", "550",
+            "100", "\uD83D\uDDDD", "Б", "500", "☎", "1000", "x2", "300",
+            "400", "П", "0", "+", "600", "700", "Б", "550",
             "50", "☎", "+", "450", "250", "350", "150", "650"
     );
 
@@ -67,16 +73,19 @@ public class GamePageController {
         SquaresWordCreating squaresWordCreating = new SquaresWordCreating(wordDefinitionManager.getWord(), 30, 8, wordPlace);
 
         //Панель для выбора буквы
+        CurtainLetterCreating curtainLetterCreating = new CurtainLetterCreating();
         LabelsLettersCreating labelsLettersCreating = new LabelsLettersCreating(letters, 20, 5.5, lettersPlace);
-        SquaresLettersCreating squaresLettersCreating = new SquaresLettersCreating(letters, wordDefinitionManager.getWord(), 20, 5.5, lettersPlace, labelsLettersCreating, squaresWordCreating, wordPlace);
+        SquaresLettersCreating squaresLettersCreating = new SquaresLettersCreating(letters, wordDefinitionManager.getWord(), 20, 5.5, lettersPlace, labelsLettersCreating, squaresWordCreating, curtainPane,
+                () -> curtainLetterCreating.CreateCurtain(curtainPane));
         lettersPlace.setLayoutX(0);
         lettersPlace.setLayoutY(constants.centerY+248);
+
+        lettersPlace.setStyle("-fx-max-height: 10px");
+
 
         //Панель для слова
             wordPlace.setLayoutX(constants.centerX/2);
             wordPlace.setLayoutY(constants.centerY-200);
-
-
 
         //Задание
             definition.setPrefWidth(230);
@@ -87,23 +96,31 @@ public class GamePageController {
             definitionContainer.setLayoutY(constants.centerY-100);
 
         //Панель для барабана
-            Pane drumPane = new Pane();
-            drumPane.setPrefSize(constants.centerX * 2, constants.centerY * 2);
+            wheelPane.setPrefSize(constants.centerX * 2, constants.centerY * 2);
 
             Group drumGroup = new Group();
-            drumGroup.getChildren().addAll(drumPane, drumElements.getCircleMiddle(), drumElements.getArrowLine(), drumElements.getArrowHead());
+            drumGroup.getChildren().addAll(drumElements.getCircleMiddle(), drumElements.getCircleBorder(), drumElements.getCircleClick());
+            arrowPane.getChildren().addAll(drumElements.getArrowLine(), drumElements.getArrowHead());
 
         //Создание секторов
-            new SectorsCreating(constants.numSectors, constants.centerX, constants.centerY, constants.radius, constants.anglePerSector, drumPane);
-            drumPane.getChildren().addAll(drumElements.getCircleBorder(), drumElements.getCircleClick());
+            new SectorsCreating(constants.numSectors, constants.centerX, constants.centerY, constants.radius, constants.anglePerSector, wheelPane);
+//            drumPane.getChildren().addAll(drumElements.getCircleBorder(), drumElements.getCircleClick());
 
         //Создание текста на секторах
-            new SectorTextCreator(constants.numSectors, constants.anglePerSector, constants.centerX, constants.centerY, constants.radius, drumPane, sectorTexts);
+            new SectorTextCreator(constants.numSectors, constants.anglePerSector, constants.centerX, constants.centerY, constants.radius, wheelPane, sectorTexts);
 
             wheelPane.getChildren().add(drumGroup);
 
+
+            curtainPane.setLayoutY(515);
         //Анимация
-            AnimationManager animationManager = new AnimationManager(drumPane, constants.anglePerSector, sectorTexts, drumElements);
+            AnimationManager animationManager = new AnimationManager(wheelPane, constants.anglePerSector, sectorTexts,
+            drumElements, () -> {
+                curtainLetterCreating.RemoveCurtain(curtainPane);
+            });
+
+        //Перегородка для букв
+
             animationManager.setOnAnimationEnd(() -> {
                 try{
                     score = Integer.parseInt(animationManager.getSelectedValue());
@@ -116,7 +133,7 @@ public class GamePageController {
                 }
 
                 switch (value){
-                    case "☠":
+                    case "Б":
                         System.out.println("Увы, вы банкрот");
                         scorepla1 = 0;
                         score = 0;

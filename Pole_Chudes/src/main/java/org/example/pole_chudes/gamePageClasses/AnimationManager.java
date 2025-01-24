@@ -29,12 +29,17 @@ public class AnimationManager {
 
     private String selectedValue = "";
 
+    public boolean curtainStatus;
+
     public AnimationManager(
             Pane wheelPane,
             double anglePerSector,
             List <String> sectorTexts,
-            DrumElements drumElements
+            DrumElements drumElements,
+            Runnable onAnimationEnd
     ) {
+        this.onAnimationEnd = onAnimationEnd;
+
         wheelPane.setRotate(0);
         this.sectorTexts = sectorTexts;
         timeline = new Timeline(
@@ -48,6 +53,9 @@ public class AnimationManager {
                         stopDrum(wheelPane, anglePerSector);
                         isAnimationRunning = false;
                         wheelPane.getChildren().add(drumElements.getCircleClick());
+                        if (onAnimationEnd != null) {
+                            onAnimationEnd.run();
+                        }
 
                     }
                 })
@@ -59,7 +67,7 @@ public class AnimationManager {
         drumElements.getCircleClick().setOnMouseClicked(event -> {
             if(!isAnimationRunning){
                 wheelPane.getChildren().remove(drumElements.getCircleClick());
-                animationStart = random.nextDouble(8, 14);
+                animationStart = random.nextDouble(8, 10);
                 timeline.play();
                 isAnimationRunning = true;
             }
@@ -76,6 +84,7 @@ public class AnimationManager {
         });
     }
     private void stopDrum(Pane wheelPane, double anglePerSector) {
+        curtainStatus = false;
         timeline.stop();
 
         double rotation = wheelPane.getRotate() % 360;
@@ -91,7 +100,6 @@ public class AnimationManager {
         }
         selectedValue = sectorTexts.get(sectorIndex);
 
-
         if (onAnimationEnd != null) {
             onAnimationEnd.run();
         }
@@ -103,5 +111,9 @@ public class AnimationManager {
 
     public String getSelectedValue(){
         return selectedValue;
+    }
+
+    public boolean getCurtainStatus(){
+        return curtainStatus;
     }
 }

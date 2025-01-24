@@ -6,10 +6,17 @@ import javafx.scene.shape.Rectangle;
 
 public class CurtainLetterCreating {
     Rectangle rectangle = new Rectangle();
-    public CurtainLetterCreating(Pane curtanePane) {
-        rectangle.setFill(Color.WHITE);
+    public CurtainLetterCreating() {
+        rectangle = new Rectangle(840, 30);
+        rectangle.setFill(Color.TRANSPARENT);
+    }
 
+    public void CreateCurtain(Pane curtanePane) {
         curtanePane.getChildren().add(rectangle);
+    }
+
+    public void RemoveCurtain(Pane curtanePane) {
+        curtanePane.getChildren().remove(rectangle);
 
     }
 }

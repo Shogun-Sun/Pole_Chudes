@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+import javax.print.attribute.standard.RequestingUserName;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,8 @@ public class SquaresLettersCreating {
     private int result;
 
     private List<Rectangle> squaresLetter = new ArrayList<>();
-    public SquaresLettersCreating(String letters, String guesWord, int squareSize, double spacing, Pane lettersPlace, LabelsLettersCreating labelsLettersCreating, SquaresWordCreating squaresWordCreating, Pane wordPlace) {
+    public SquaresLettersCreating(String letters, String guesWord, int squareSize, double spacing, Pane lettersPlace, LabelsLettersCreating labelsLettersCreating, SquaresWordCreating squaresWordCreating, Pane curtainPlace, Runnable onCurtainCreate) {
+        onCurtainCreate.run();
         result = 0;
         for (int i = 0; i < letters.length(); i++) {
             String letter = String.valueOf(letters.charAt(i));
@@ -26,7 +28,7 @@ public class SquaresLettersCreating {
             square.setX(i * (squareSize + spacing));
             square.setY(0);
             square.setOnMouseClicked(event -> {
-                System.out.println();
+                onCurtainCreate.run();
                 if(guesWord.contains(letter)){
                 System.out.println("Есть такая буква " + letter);
                 for(int j = 0; j< guesWord.length(); j++){
