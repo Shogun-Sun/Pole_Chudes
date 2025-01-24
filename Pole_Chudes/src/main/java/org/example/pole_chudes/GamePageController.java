@@ -104,7 +104,6 @@ public class GamePageController {
 
         //Создание секторов
             new SectorsCreating(constants.numSectors, constants.centerX, constants.centerY, constants.radius, constants.anglePerSector, wheelPane);
-//            drumPane.getChildren().addAll(drumElements.getCircleBorder(), drumElements.getCircleClick());
 
         //Создание текста на секторах
             new SectorTextCreator(constants.numSectors, constants.anglePerSector, constants.centerX, constants.centerY, constants.radius, wheelPane, sectorTexts);
