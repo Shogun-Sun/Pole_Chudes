@@ -75,7 +75,7 @@ public class GamePageController {
         //Панель для выбора буквы
         CurtainLetterCreating curtainLetterCreating = new CurtainLetterCreating();
         LabelsLettersCreating labelsLettersCreating = new LabelsLettersCreating(letters, 20, 5.5, lettersPlace);
-        SquaresLettersCreating squaresLettersCreating = new SquaresLettersCreating(letters, wordDefinitionManager.getWord(), 20, 5.5, lettersPlace, labelsLettersCreating, squaresWordCreating, curtainPane,
+        SquaresLettersCreating squaresLettersCreating = new SquaresLettersCreating(wheelPane, drumElements, letters, wordDefinitionManager.getWord(), 20, 5.5, lettersPlace, labelsLettersCreating, squaresWordCreating, curtainPane,
                 () -> curtainLetterCreating.CreateCurtain(curtainPane));
         lettersPlace.setLayoutX(0);
         lettersPlace.setLayoutY(constants.centerY+248);
@@ -99,7 +99,7 @@ public class GamePageController {
             wheelPane.setPrefSize(constants.centerX * 2, constants.centerY * 2);
 
             Group drumGroup = new Group();
-            drumGroup.getChildren().addAll(drumElements.getCircleMiddle(), drumElements.getCircleBorder(), drumElements.getCircleClick());
+            drumGroup.getChildren().addAll(drumElements.getCircleMiddle(), drumElements.getCircleBorder());
             arrowPane.getChildren().addAll(drumElements.getArrowLine(), drumElements.getArrowHead());
 
         //Создание секторов
@@ -109,6 +109,7 @@ public class GamePageController {
             new SectorTextCreator(constants.numSectors, constants.anglePerSector, constants.centerX, constants.centerY, constants.radius, wheelPane, sectorTexts);
 
             wheelPane.getChildren().add(drumGroup);
+            wheelPane.getChildren().add(drumElements.getCircleClick());
 
 
             curtainPane.setLayoutY(515);

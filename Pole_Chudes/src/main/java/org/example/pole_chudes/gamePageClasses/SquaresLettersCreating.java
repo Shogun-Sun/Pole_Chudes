@@ -13,11 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SquaresLettersCreating {
-
     private int result;
 
     private List<Rectangle> squaresLetter = new ArrayList<>();
-    public SquaresLettersCreating(String letters, String guesWord, int squareSize, double spacing, Pane lettersPlace, LabelsLettersCreating labelsLettersCreating, SquaresWordCreating squaresWordCreating, Pane curtainPlace, Runnable onCurtainCreate) {
+    public SquaresLettersCreating(Pane wheelPane, DrumElements drumElements, String letters, String guesWord, int squareSize, double spacing, Pane lettersPlace,
+                                  LabelsLettersCreating labelsLettersCreating, SquaresWordCreating squaresWordCreating,
+                                  Pane curtainPlace, Runnable onCurtainCreate) {
         onCurtainCreate.run();
         result = 0;
         for (int i = 0; i < letters.length(); i++) {
@@ -28,6 +29,7 @@ public class SquaresLettersCreating {
             square.setX(i * (squareSize + spacing));
             square.setY(0);
             square.setOnMouseClicked(event -> {
+                wheelPane.getChildren().add(drumElements.getCircleClick());
                 onCurtainCreate.run();
                 if(guesWord.contains(letter)){
                 System.out.println("Есть такая буква " + letter);
@@ -60,6 +62,7 @@ public class SquaresLettersCreating {
                 if (index != -1) {
                     Label remLabel = labelsLettersCreating.labelsLetter.get(index);
                     lettersPlace.getChildren().removeAll(square, remLabel);
+                    squaresLetter.set(index, null);
                 }
 
             });
