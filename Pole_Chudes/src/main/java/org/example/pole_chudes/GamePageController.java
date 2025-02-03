@@ -7,6 +7,9 @@ import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import org.example.pole_chudes.gamePageClasses.*;
+import org.example.pole_chudes.gamePageClasses.UsesDependencies;
+import org.example.pole_chudes.gamePageClasses.SquaresLettersCreating;
+
 import java.util.List;
 
 
@@ -51,14 +54,11 @@ public class GamePageController {
     static int scorepla2 = 0;
     static int scorepla3 = 0;
 
-    private List<String> sectorTexts = List.of(
-            "100", "\uD83D\uDDDD", "Б", "500", "☎", "1000", "x2", "300",
-            "400", "П", "0", "+", "600", "700", "Б", "550",
-            "50", "☎", "+", "450", "250", "350", "150", "650"
-    );
-
-    public String letters = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
-
+//    private List<String> sectorTexts = List.of(
+//            "100", "\uD83D\uDDDD", "Б", "500", "☎", "1000", "x2", "300",
+//            "400", "П", "0", "+", "600", "700", "Б", "550",
+//            "50", "☎", "+", "450", "250", "350", "150", "650"
+//    );
     @FXML
     public void initialize() {
 //        PauseTransition pause = new PauseTransition(Duration.millis(1));
@@ -69,19 +69,20 @@ public class GamePageController {
             WordDefinitionManager wordDefinitionManager = new WordDefinitionManager();
 
         //Поле для загаданного слова
-        LabelsWordLetterCreating labelsWordLetterCreating = new LabelsWordLetterCreating(wordDefinitionManager.getWord(), 30, 8, wordPlace);
+        new LabelsWordLetterCreating(wordDefinitionManager.getWord(), 30, 8, wordPlace);
         SquaresWordCreating squaresWordCreating = new SquaresWordCreating(wordDefinitionManager.getWord(), 30, 8, wordPlace);
 
         //Панель для выбора буквы
         CurtainLetterCreating curtainLetterCreating = new CurtainLetterCreating();
-        LabelsLettersCreating labelsLettersCreating = new LabelsLettersCreating(letters, 20, 5.5, lettersPlace);
-        SquaresLettersCreating squaresLettersCreating = new SquaresLettersCreating(wheelPane, drumElements, letters, wordDefinitionManager.getWord(), 20, 5.5, lettersPlace, labelsLettersCreating, squaresWordCreating, curtainPane,
+        LabelsLettersCreating labelsLettersCreating = new LabelsLettersCreating(constants.letters, 20, 5.5, lettersPlace);
+
+        UsesDependencies usesDependencies = new UsesDependencies(wheelPane, drumElements, labelsLettersCreating, squaresWordCreating, lettersPlace);
+        new SquaresLettersCreating(usesDependencies, wordDefinitionManager.getWord(),
                 () -> curtainLetterCreating.CreateCurtain(curtainPane));
         lettersPlace.setLayoutX(0);
         lettersPlace.setLayoutY(constants.centerY+248);
 
         lettersPlace.setStyle("-fx-max-height: 10px");
-
 
         //Панель для слова
             wordPlace.setLayoutX(constants.centerX/2);
@@ -106,7 +107,7 @@ public class GamePageController {
             new SectorsCreating(constants.numSectors, constants.centerX, constants.centerY, constants.radius, constants.anglePerSector, wheelPane);
 
         //Создание текста на секторах
-            new SectorTextCreator(constants.numSectors, constants.anglePerSector, constants.centerX, constants.centerY, constants.radius, wheelPane, sectorTexts);
+            new SectorTextCreator(constants.numSectors, constants.anglePerSector, constants.centerX, constants.centerY, constants.radius, wheelPane, constants.sectorTexts);
 
             wheelPane.getChildren().add(drumGroup);
             wheelPane.getChildren().add(drumElements.getCircleClick());
@@ -114,12 +115,10 @@ public class GamePageController {
 
             curtainPane.setLayoutY(515);
         //Анимация
-            AnimationManager animationManager = new AnimationManager(wheelPane, constants.anglePerSector, sectorTexts,
+            AnimationManager animationManager = new AnimationManager(wheelPane, constants.anglePerSector, constants.sectorTexts,
             drumElements, () -> {
                 curtainLetterCreating.RemoveCurtain(curtainPane);
             });
-
-        //Перегородка для букв
 
             animationManager.setOnAnimationEnd(() -> {
                 try{
