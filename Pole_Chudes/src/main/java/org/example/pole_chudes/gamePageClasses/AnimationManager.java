@@ -6,7 +6,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
-import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.Random;
 
@@ -19,6 +18,7 @@ public class AnimationManager {
     private final double animationEnd = 0;
     private final double stepAnimation = 2;
     private boolean isAnimationRunning = false;
+    private boolean isClickble = true;
 
     private List <String> sectorTexts;
     private Random random = new Random();
@@ -51,32 +51,14 @@ public class AnimationManager {
                         if (onAnimationEnd != null) {
                             onAnimationEnd.run();
                         }
-
                     }
                 })
         );
 
         timeline.setCycleCount(Timeline.INDEFINITE);
-        drumElements.getCircleClick().setOnMouseClicked(event -> {
-            if(!isAnimationRunning){
-                wheelPane.getChildren().remove(drumElements.getCircleClick());
-                animationStart = random.nextDouble(8, 10);
-                timeline.play();
-                isAnimationRunning = true;
-            }
-        });
 
-        drumElements.getCircleClick().setFocusTraversable(true);
-        drumElements.getCircleClick().setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.SPACE) {
-                if (!isAnimationRunning) {
-                    wheelPane.getChildren().remove(drumElements.getCircleClick());
-                    animationStart = random.nextDouble(8, 14);
-                    timeline.play();
-                    isAnimationRunning = true;
-                }
-            }
-        });
+        keyboardWheelClick(drumElements, wheelPane);
+        
     }
     private void stopDrum(Pane wheelPane, double anglePerSector) {
         curtainStatus = false;
@@ -100,6 +82,29 @@ public class AnimationManager {
         }
     }
 
+    public void mouseWheelClick(DrumElements drumElements, Pane wheelPane) {
+        drumElements.getCircleClick().setOnMouseClicked(event -> {
+            if (!isAnimationRunning && isClickble) {
+                wheelPane.getChildren().remove(drumElements.getCircleClick());
+                animationStart = random.nextDouble(8, 10);
+                timeline.play();
+                isAnimationRunning = true;
+            }
+        });
+    }
+
+    public void keyboardWheelClick(DrumElements drumElements, Pane wheelPane) {
+        drumElements.getCircleClick().setFocusTraversable(true);
+        drumElements.getCircleClick().setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.SPACE && !isAnimationRunning && isClickble) {
+                wheelPane.getChildren().remove(drumElements.getCircleClick());
+                animationStart = random.nextDouble(8, 14);
+                timeline.play();
+                isAnimationRunning = true;
+            }
+        });
+    }
+
     public void setOnAnimationEnd(Runnable onAnimationEnd) {
         this.onAnimationEnd = onAnimationEnd;
     }
@@ -108,7 +113,9 @@ public class AnimationManager {
         return selectedValue;
     }
 
-    public boolean getCurtainStatus(){
-        return curtainStatus;
+    public void setClickable(boolean isClickable) {
+        this.isClickble = isClickable;
     }
+
+
 }

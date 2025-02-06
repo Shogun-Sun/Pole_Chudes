@@ -55,6 +55,8 @@ public class SquaresLettersCreating {
 
             } else{
                 System.out.println("Нет такой буквы " + letter);
+                usesDependencies.getAnimationManager().setClickable(false);
+
             }
                 int index = squaresLetter.indexOf(square);
                 if (index != -1) {

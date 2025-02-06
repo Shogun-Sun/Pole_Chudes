@@ -1,6 +1,5 @@
 package org.example.pole_chudes;
 
-
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.Group;
@@ -9,9 +8,6 @@ import javafx.scene.shape.Rectangle;
 import org.example.pole_chudes.gamePageClasses.*;
 import org.example.pole_chudes.gamePageClasses.UsesDependencies;
 import org.example.pole_chudes.gamePageClasses.SquaresLettersCreating;
-
-import java.util.List;
-
 
 public class GamePageController {
     @FXML
@@ -54,11 +50,6 @@ public class GamePageController {
     static int scorepla2 = 0;
     static int scorepla3 = 0;
 
-//    private List<String> sectorTexts = List.of(
-//            "100", "\uD83D\uDDDD", "Б", "500", "☎", "1000", "x2", "300",
-//            "400", "П", "0", "+", "600", "700", "Б", "550",
-//            "50", "☎", "+", "450", "250", "350", "150", "650"
-//    );
     @FXML
     public void initialize() {
 //        PauseTransition pause = new PauseTransition(Duration.millis(1));
@@ -112,13 +103,14 @@ public class GamePageController {
             wheelPane.getChildren().add(drumGroup);
             wheelPane.getChildren().add(drumElements.getCircleClick());
 
-
             curtainPane.setLayoutY(515);
         //Анимация
             AnimationManager animationManager = new AnimationManager(wheelPane, constants.anglePerSector, constants.sectorTexts,
             drumElements, () -> {
                 curtainLetterCreating.RemoveCurtain(curtainPane);
             });
+
+            animationManager.mouseWheelClick(drumElements, wheelPane);
 
             animationManager.setOnAnimationEnd(() -> {
                 try{
@@ -155,25 +147,28 @@ public class GamePageController {
                         System.out.println("Сектор ключ на барабане");
                         score = 0;
                         value = "";
+                        break;
 
                     case "x2":
                         scorepla1 = scorepla1 * 2;
                         pla1.setText(String.valueOf(scorepla1));
                         value = "";
                         score = 0;
+                        break;
 
                     case "П":
                         System.out.println("Сектор приз на барабане");
                         score = 0;
                         value = "";
+                        break;
 
                     default:
                         scorepla1 += score;
                         pla1.setText(String.valueOf(scorepla1));
                         break;
-
                 }
             });
+            usesDependencies.setAnimationManager(animationManager);
 //        });
 //        pause.play();
     }

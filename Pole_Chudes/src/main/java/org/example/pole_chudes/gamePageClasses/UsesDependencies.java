@@ -9,6 +9,7 @@ public class UsesDependencies {
     private LabelsLettersCreating labelsLettersCreating;
     private SquaresWordCreating squaresWordCreating;
     private Pane lettersPlace;
+    private AnimationManager animationManager;
 
     public UsesDependencies(Pane wheelPane, DrumElements drumElements,
                             LabelsLettersCreating labelsLettersCreating, SquaresWordCreating squaresWordCreating,
@@ -19,6 +20,7 @@ public class UsesDependencies {
         this.labelsLettersCreating = labelsLettersCreating;
         this.squaresWordCreating = squaresWordCreating;
         this.lettersPlace = lettersPlace;
+        this.animationManager = animationManager;
     }
 
     public Pane getWheelPane() {
@@ -39,5 +41,11 @@ public class UsesDependencies {
 
     public Pane getLettersPlace() {
         return lettersPlace;
+    }
+
+    public AnimationManager getAnimationManager() { return animationManager; }
+
+    public void setAnimationManager(AnimationManager animationManager) {
+        this.animationManager = animationManager;
     }
 }
