@@ -3,21 +3,22 @@ package org.example.pole_chudes;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.Group;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import org.example.pole_chudes.gamePageClasses.*;
 import org.example.pole_chudes.gamePageClasses.UsesDependencies;
-import org.example.pole_chudes.gamePageClasses.SquaresLettersCreating;
+//import org.example.pole_chudes.gamePageClasses.SquaresLettersCreating;
 
 public class GamePageController {
     @FXML
     private Pane wheelPane;
 
     @FXML
-    private Pane wordPlace;
+    private GridPane wordPlace;
 
     @FXML
-    private Pane lettersPlace;
+    private GridPane lettersPlace;
 
     @FXML
     private Pane curtainPane;
@@ -46,30 +47,36 @@ public class GamePageController {
     private Rectangle square;
     private Rectangle hideSquare;
 
+    private Runnable curtainTask;
+
+    public static int currentPlayer = 1;
+    public static boolean selectLetter = false;
+
     static int scorepla1 = 0;
     static int scorepla2 = 0;
     static int scorepla3 = 0;
 
+    private boolean isBotTurn = false;
+
     @FXML
     public void initialize() {
-//        PauseTransition pause = new PauseTransition(Duration.millis(1));
-//        pause.setOnFinished(event -> {
             Const constants = new Const();
             DrumElements drumElements = new DrumElements(constants.centerX, constants.centerY, constants.radius);
 
             WordDefinitionManager wordDefinitionManager = new WordDefinitionManager();
 
         //Поле для загаданного слова
-        new LabelsWordLetterCreating(wordDefinitionManager.getWord(), 30, 8, wordPlace);
-        SquaresWordCreating squaresWordCreating = new SquaresWordCreating(wordDefinitionManager.getWord(), 30, 8, wordPlace);
+        new Word(wordPlace, wordDefinitionManager.getWord());
 
         //Панель для выбора буквы
         CurtainLetterCreating curtainLetterCreating = new CurtainLetterCreating();
-        LabelsLettersCreating labelsLettersCreating = new LabelsLettersCreating(constants.letters, 20, 5.5, lettersPlace);
 
-        UsesDependencies usesDependencies = new UsesDependencies(wheelPane, drumElements, labelsLettersCreating, squaresWordCreating, lettersPlace);
-        new SquaresLettersCreating(usesDependencies, wordDefinitionManager.getWord(),
-                () -> curtainLetterCreating.CreateCurtain(curtainPane));
+        UsesDependencies usesDependencies = new UsesDependencies(wheelPane, drumElements, lettersPlace); //labelsLettersCreating
+
+        curtainTask = () -> curtainLetterCreating.CreateCurtain(curtainPane);
+        new Letters(lettersPlace, wordDefinitionManager.getWord());
+
+
         lettersPlace.setLayoutX(0);
         lettersPlace.setLayoutY(constants.centerY+248);
 
@@ -110,66 +117,94 @@ public class GamePageController {
                 curtainLetterCreating.RemoveCurtain(curtainPane);
             });
 
-            animationManager.mouseWheelClick(drumElements, wheelPane);
-
-            animationManager.setOnAnimationEnd(() -> {
-                try{
-                    score = Integer.parseInt(animationManager.getSelectedValue());
-                } catch (NumberFormatException e){
-                    value = animationManager.getSelectedValue();
-                }
-
-                if(value == null){
-                    value = "";
-                }
-
-                switch (value){
-                    case "Б":
-                        System.out.println("Увы, вы банкрот");
-                        scorepla1 = 0;
-                        score = 0;
-                        pla1.setText("0");
-                        value = "";
-                        break;
-                    case "☎":
-                        System.out.println("Сектор шанс на барабане");
-                        score = 0;
-                        value = "";
-
-                        break;
-                    case "+":
-                        System.out.println("Сектор + на барабане, откройте любую букву");
-                        score = 0;
-                        value = "";
-                        break;
-
-                    case "\uD83D\uDDDD":
-                        System.out.println("Сектор ключ на барабане");
-                        score = 0;
-                        value = "";
-                        break;
-
-                    case "x2":
-                        scorepla1 = scorepla1 * 2;
-                        pla1.setText(String.valueOf(scorepla1));
-                        value = "";
-                        score = 0;
-                        break;
-
-                    case "П":
-                        System.out.println("Сектор приз на барабане");
-                        score = 0;
-                        value = "";
-                        break;
-
-                    default:
-                        scorepla1 += score;
-                        pla1.setText(String.valueOf(scorepla1));
-                        break;
-                }
+        animationManager.setOnAnimationEnd(() -> {
+            processScore(animationManager);
             });
+
             usesDependencies.setAnimationManager(animationManager);
-//        });
-//        pause.play();
     }
+
+    public Runnable getCurtainTask() {
+        return curtainTask;
+    }
+
+    public void nextTurn(AnimationManager animationManager, DrumElements drumElements) {
+        currentPlayer++;
+        if (currentPlayer > 3) {
+            currentPlayer = 1;
+        }
+        checkPlayerTurn(animationManager, drumElements);
+    }
+
+    private void checkPlayerTurn(AnimationManager animationManager, DrumElements drumElements) {
+        if (currentPlayer == 2|| currentPlayer == 3 ) {
+            if (selectLetter) {
+                animationManager.autoStartAnimation(wheelPane, drumElements);
+            }
+
+        } else if (currentPlayer == 1) {
+            animationManager.mouseWheelClick(drumElements, wheelPane);
+            animationManager.keyboardWheelClick(drumElements, wheelPane);
+        }
+    }
+
+    public void processScore(AnimationManager animationManager) {
+        try{
+            score = Integer.parseInt(animationManager.getSelectedValue());
+        } catch (NumberFormatException e){
+            value = animationManager.getSelectedValue();
+        }
+
+        if(value == null){
+            value = "";
+        }
+
+        switch (value){
+            case "Б":
+                System.out.println("Увы, вы банкрот");
+                scorepla1 = 0;
+                score = 0;
+                pla1.setText("0");
+                value = "";
+                break;
+            case "☎":
+                System.out.println("Сектор шанс на барабане");
+                score = 0;
+                value = "";
+
+                break;
+            case "+":
+                System.out.println("Сектор + на барабане, откройте любую букву");
+                score = 0;
+                value = "";
+                break;
+
+            case "\uD83D\uDDDD":
+                System.out.println("Сектор ключ на барабане");
+                score = 0;
+                value = "";
+                break;
+
+            case "x2":
+                scorepla1 = scorepla1 * 2;
+                pla1.setText(String.valueOf(scorepla1));
+                value = "";
+                score = 0;
+                break;
+
+            case "П":
+                System.out.println("Сектор приз на барабане");
+                score = 0;
+                value = "";
+                break;
+
+            default:
+                scorepla1 += score;
+                pla1.setText(String.valueOf(scorepla1));
+                break;
+        }
+    }
+
+
+
 }

@@ -55,10 +55,10 @@ public class AnimationManager {
                 })
         );
 
-        timeline.setCycleCount(Timeline.INDEFINITE);
-
+        mouseWheelClick(drumElements, wheelPane);
         keyboardWheelClick(drumElements, wheelPane);
-        
+
+        timeline.setCycleCount(Timeline.INDEFINITE);
     }
     private void stopDrum(Pane wheelPane, double anglePerSector) {
         curtainStatus = false;
@@ -103,6 +103,13 @@ public class AnimationManager {
                 isAnimationRunning = true;
             }
         });
+    }
+
+    public void autoStartAnimation(Pane wheelPane, DrumElements drumElements) {
+        wheelPane.getChildren().remove(drumElements.getCircleClick());
+        animationStart = random.nextDouble(8, 14);
+        timeline.play();
+        isAnimationRunning = true;
     }
 
     public void setOnAnimationEnd(Runnable onAnimationEnd) {

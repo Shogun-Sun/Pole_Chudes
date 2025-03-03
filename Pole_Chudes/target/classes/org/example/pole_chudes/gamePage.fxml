@@ -1,37 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.shape.Circle?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.AnchorPane?>
 
-<Pane xmlns:fx="http://javafx.com/fxml"
-    fx:controller="org.example.pole_chudes.GamePageController">
-        <Pane fx:id="wheelPane"/>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.pole_chudes.GamePageController">
+        <Pane fx:id="wheelPane" />
 
         <HBox alignment="CENTER" spacing="50">
                 <VBox>
-                        <Label text="Player One"/>
+                        <Label text="Player One" />
                         <HBox alignment="CENTER">
-                                <Label fx:id="pla1"/>
+                                <Label fx:id="pla1" />
                         </HBox>
                 </VBox>
                 <VBox>
-                        <Label text="Player Two"/>
+                        <Label text="Player Two" />
                         <HBox alignment="CENTER">
-                                <Label fx:id="pla2"/>
+                                <Label fx:id="pla2" />
                         </HBox>
                 </VBox>
                 <VBox>
-                        <Label text="Player Three"/>
+                        <Label text="Player Three" />
                         <HBox alignment="CENTER">
-                                <Label fx:id="pla3"/>
+                                <Label fx:id="pla3" />
                         </HBox>
                 </VBox>
         </HBox>
@@ -39,12 +30,14 @@
         <HBox alignment="CENTER">
         </HBox>
 
-        <Pane fx:id="definitionContainer" >
-                <Label fx:id="definition"/>
+        <Pane fx:id="definitionContainer">
+                <Label fx:id="definition" />
         </Pane>
 
-    <Pane fx:id="arrowPane"/>
-    <Pane fx:id="lettersPlace"/>
-    <Pane fx:id="wordPlace"/>
-    <Pane fx:id="curtainPane"/>
+    <Pane fx:id="arrowPane" />
+    <GridPane fx:id="lettersPlace" />
+    <GridPane fx:id="wordPlace"
+    prefWidth="840"
+    />
+    <Pane fx:id="curtainPane" />
 </Pane>
