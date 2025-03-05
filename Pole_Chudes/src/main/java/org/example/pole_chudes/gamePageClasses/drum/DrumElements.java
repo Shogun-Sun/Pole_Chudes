@@ -1,9 +1,10 @@
-package org.example.pole_chudes.gamePageClasses;
+package org.example.pole_chudes.gamePageClasses.drum;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
+import org.example.pole_chudes.gamePageClasses.Const;
 
 public class DrumElements {
     private Circle circleBorder;

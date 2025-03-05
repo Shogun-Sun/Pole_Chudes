@@ -1,6 +1,8 @@
 package org.example.pole_chudes.gamePageClasses;
 
 import javafx.scene.layout.Pane;
+import org.example.pole_chudes.gamePageClasses.drum.AnimationManager;
+import org.example.pole_chudes.gamePageClasses.drum.DrumElements;
 
 public class UsesDependencies {
 

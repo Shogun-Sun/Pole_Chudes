@@ -30,14 +30,12 @@
         <HBox alignment="CENTER">
         </HBox>
 
-        <Pane fx:id="definitionContainer">
-                <Label fx:id="definition" />
+        <Pane fx:id="yakubovich">
+                <ScrollPane layoutY="-100" prefHeight="100" prefWidth="155" fx:id="dialog" />
         </Pane>
 
     <Pane fx:id="arrowPane" />
     <GridPane fx:id="lettersPlace" />
-    <GridPane fx:id="wordPlace"
-    prefWidth="840"
-    />
+    <GridPane fx:id="wordPlace"/>
     <Pane fx:id="curtainPane" />
 </Pane>

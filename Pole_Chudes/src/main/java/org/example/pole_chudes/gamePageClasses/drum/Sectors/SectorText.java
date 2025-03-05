@@ -1,7 +1,6 @@
-package org.example.pole_chudes.gamePageClasses;
+package org.example.pole_chudes.gamePageClasses.drum.Sectors;
 
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class SectorText {

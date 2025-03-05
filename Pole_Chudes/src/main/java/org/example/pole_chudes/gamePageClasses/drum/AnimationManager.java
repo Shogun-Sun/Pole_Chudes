@@ -1,4 +1,4 @@
-package org.example.pole_chudes.gamePageClasses;
+package org.example.pole_chudes.gamePageClasses.drum;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -31,10 +31,8 @@ public class AnimationManager {
             Pane wheelPane,
             double anglePerSector,
             List <String> sectorTexts,
-            DrumElements drumElements,
-            Runnable onAnimationEnd
+            DrumElements drumElements
     ) {
-        this.onAnimationEnd = onAnimationEnd;
 
         wheelPane.setRotate(0);
         this.sectorTexts = sectorTexts;
@@ -76,16 +74,12 @@ public class AnimationManager {
             sectorIndex = 0;
         }
         selectedValue = sectorTexts.get(sectorIndex);
-
-        if (onAnimationEnd != null) {
-            onAnimationEnd.run();
-        }
     }
 
     public void mouseWheelClick(DrumElements drumElements, Pane wheelPane) {
         drumElements.getCircleClick().setOnMouseClicked(event -> {
             if (!isAnimationRunning && isClickble) {
-                wheelPane.getChildren().remove(drumElements.getCircleClick());
+//                wheelPane.getChildren().remove(drumElements.getCircleClick());
                 animationStart = random.nextDouble(8, 10);
                 timeline.play();
                 isAnimationRunning = true;
@@ -118,10 +112,6 @@ public class AnimationManager {
 
     public String getSelectedValue(){
         return selectedValue;
-    }
-
-    public void setClickable(boolean isClickable) {
-        this.isClickble = isClickable;
     }
 
 

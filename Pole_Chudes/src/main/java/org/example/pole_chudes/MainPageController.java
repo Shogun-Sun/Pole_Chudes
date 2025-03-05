@@ -8,7 +8,7 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 public class MainPageController {
-    private double gameSceneX = 840;  //840
+    private double gameSceneX = 805;  //840
     private double gameSceneY = 540;    //540
     public static Stage currentStage;
 

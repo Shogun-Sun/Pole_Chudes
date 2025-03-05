@@ -1,4 +1,4 @@
-package org.example.pole_chudes.gamePageClasses;
+package org.example.pole_chudes.gamePageClasses.wordLetters;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -126,7 +126,6 @@ public class WordDefinitionManager {
                     definition = randomEntry.text()
                             .replaceAll(word, "")
                             .replaceAll(word.toUpperCase(), "")
-
                             .replaceAll("(?i)" + word.substring(0, word.length() - 1) + "[а-яА-Я]?[а-яА-Я]*", "***")
                             .replaceAll("(?i)" + word + "(?:[а-яА-Я]+)?", "***")
 

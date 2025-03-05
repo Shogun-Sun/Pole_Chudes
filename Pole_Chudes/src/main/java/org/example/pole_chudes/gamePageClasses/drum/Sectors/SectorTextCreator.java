@@ -1,9 +1,6 @@
-package org.example.pole_chudes.gamePageClasses;
+package org.example.pole_chudes.gamePageClasses.drum.Sectors;
 
-import javafx.scene.Group;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 
 import java.util.List;
 
