@@ -1,17 +1,13 @@
 package org.example.pole_chudes.gamePageClasses.yakubovich;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.util.Duration;
 import org.example.pole_chudes.GamePageController;
 import org.example.pole_chudes.gamePageClasses.Const;
 
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Random;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -22,15 +18,13 @@ public class YakubovichAnimation {
     private static Image state2;
     private Media media;
     private MediaPlayer mediaPlayer;
-    private Random random = new Random();
     private GamePageController gamePageController;
 
     public YakubovichAnimation(GamePageController gamePageController) {
         this.gamePageController = gamePageController;
     }
 
-    public void startAnimation(Pane yakubovich, Duration duration) {
-
+    public void startAnimation(Pane yakubovich, String text) {
         Const constants = new Const();
         InputStream inputStream1 = getClass().getResourceAsStream("/org/example/images/stateOne.png");
         InputStream inputStream2 = getClass().getResourceAsStream("/org/example/images/stateTwo.png");
@@ -56,35 +50,32 @@ public class YakubovichAnimation {
         yakubovich.setLayoutX(constants.centerX + 220);
         yakubovich.setLayoutY(constants.centerY + 80);
 
-        Timeline timeline = new Timeline(
-                new KeyFrame(Duration.millis(random.nextDouble(400) + 300), event -> {
-                    if (mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
-                        mediaPlayer.stop();
-                    }
-                    if (mediaPlayer != null) {
-                        mediaPlayer.play();
-                    }
-                    if (imageView.getImage() == state1) {
-                        imageView.setImage(state2);
-                    } else {
-                        imageView.setImage(state1);
-                    }
-                })
-        );
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
+        updateImage(text);
+    }
 
-        KeyFrame stopFrame = new KeyFrame(duration, event -> {
-            timeline.stop();
-            gamePageController.circleClickEnable();
-            if (mediaPlayer != null) {
-                mediaPlayer.stop();
-            }
-            if (imageView.getImage() == state2) {
-                imageView.setImage(state1);
-            }
-        });
-        Timeline stopTimeline = new Timeline(stopFrame);
-        stopTimeline.play();
+    public void updateImage(String text) {
+        if (text == null || text.isEmpty()) return;
+
+        char lastChar = text.charAt(text.length() - 1);
+
+        if (Character.isLetterOrDigit(lastChar) || "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~".contains(String.valueOf(lastChar))) {
+            imageView.setImage(state1);
+            playSound();
+        } else if (lastChar == ' ') {
+            imageView.setImage(state2);
+            stopSound();
+        }
+    }
+
+    private void playSound() {
+        if (mediaPlayer != null && mediaPlayer.getStatus() != MediaPlayer.Status.PLAYING) {
+            mediaPlayer.play();
+        }
+    }
+
+    private void stopSound() {
+        if (mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+            mediaPlayer.stop();
+        }
     }
 }

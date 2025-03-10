@@ -21,7 +21,7 @@ public class ClickLetterAction {
             if(String.valueOf(word.charAt(i)).equals(letter)) {
                 int index = random.nextInt(2);
                 duration = Duration.seconds(4);
-                gamePageController.yakubovichAnimationStart(duration);
+                gamePageController.yakubovichAnimationStart(String.format(dialogs[index], letter));
                 gamePageController.setDialogText(String.format(dialogs[index], letter));
                 List<Button> foundButtons = getButtonsByText(Word.word_buttons, letter);
                 for (Button button : foundButtons) {
@@ -33,8 +33,9 @@ public class ClickLetterAction {
         }
         if(!letterGuessed) {
             duration = Duration.seconds(2);
-            gamePageController.yakubovichAnimationStart(duration);
+            gamePageController.yakubovichAnimationStart(String.format(dialogs[2], letter));
             gamePageController.setDialogText(String.format(dialogs[2], letter));
+            gamePageController.circleClickDisable();
         }
         checkWin(result, word);
     }

@@ -22,6 +22,7 @@ public class Letters {
             button.setDisable(true);
             lettersGrid.add(button, col, row);
             button.setOnAction(event -> {
+                gamePageController.setWheelState(true);
                 int buttonIndex = letterButtons.indexOf(button);
                 state.set(buttonIndex, true);
                 new ClickLetterAction(button.getText(), word, gamePageController);

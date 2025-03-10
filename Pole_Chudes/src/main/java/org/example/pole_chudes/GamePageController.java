@@ -22,7 +22,7 @@ import org.example.pole_chudes.gamePageClasses.wordLetters.WordDefinitionManager
 
 public class GamePageController {
     @FXML
-    public Pane wheelPane;
+    private Pane wheelPane;
 
     @FXML
     private GridPane wordPlace;
@@ -61,12 +61,12 @@ public class GamePageController {
     static int scorepla2 = 0;
     static int scorepla3 = 0;
 
+    private static boolean wheelState = true;
     private static DrumElements drumElements;
     private static Word word;
     private static Letters letters;
     private static Label dialogLabel = new Label();
     private static  YakubovichAnimation yakubovichAnimation;
-    private Duration duration;
     private Timeline timeline;
 
     @FXML
@@ -74,12 +74,10 @@ public class GamePageController {
             yakubovichAnimation = new YakubovichAnimation(this);
 
             Const constants = new Const();
-            duration = Duration.seconds(10);
-            yakubovichAnimationStart(duration);
             drumElements = new DrumElements(constants.centerX, constants.centerY, constants.radius);
 
             WordDefinitionManager wordDefinitionManager = new WordDefinitionManager();
-
+            yakubovichAnimationStart(wordDefinitionManager.getDefinition());
             UsesDependencies usesDependencies = new UsesDependencies(wheelPane, drumElements, lettersPlace);
 
         //Поле для букв
@@ -127,11 +125,11 @@ public class GamePageController {
     public void processScore(AnimationManager animationManager) {
         try{
             String text = "Очков на барабане, буква?";
-            yakubovichAnimationStart(duration);
+            yakubovichAnimationStart(text);
+            wheelState = false;
             score = Integer.parseInt(animationManager.getSelectedValue());
             letters.enableButtons();
             dialog.setContent(setDialogText(String.valueOf(score) + " очков на барабане, ваша буква?"));
-            circleClickDisable();
         } catch (NumberFormatException e){
             value = animationManager.getSelectedValue();
         }
@@ -185,12 +183,19 @@ public class GamePageController {
         dialogLabel.setMaxWidth(135);
 
         final int[] charIndex = {0};
-        timeline = new Timeline(new KeyFrame(Duration.millis(60), event -> {
+        timeline = new Timeline(new KeyFrame(Duration.millis(100), event -> {
             if (charIndex[0] < definition.length()) {
                 dialogLabel.setText(dialogLabel.getText() + definition.charAt(charIndex[0]));
+                scrollToBottom();
+                yakubovichAnimation.updateImage(dialogLabel.getText());
                 charIndex[0]++;
+                circleClickDisable();
             } else {
                 timeline.stop();
+                if(wheelState){
+                    circleClickEnable();
+                }
+
             }
         }));
         timeline.setCycleCount(definition.length() + 1);
@@ -208,7 +213,15 @@ public class GamePageController {
         }
     }
 
-    public void yakubovichAnimationStart(Duration duration) {
-        yakubovichAnimation.startAnimation(yakubovich, duration);
+    public void yakubovichAnimationStart(String text) {
+        yakubovichAnimation.startAnimation(yakubovich, text);
+    }
+
+    public void setWheelState(boolean state) {
+        wheelState = state;
+    }
+
+    public void scrollToBottom() {
+        dialog.setVvalue(1.0);
     }
 }
