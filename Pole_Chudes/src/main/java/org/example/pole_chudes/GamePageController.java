@@ -34,9 +34,6 @@ public class GamePageController {
     private Pane curtainPane;
 
     @FXML
-    private Pane dialogContainer;
-
-    @FXML
     private Pane arrowPane;
 
     @FXML
@@ -62,17 +59,17 @@ public class GamePageController {
     static int scorepla3 = 0;
 
     private static boolean wheelState = true;
+    private static boolean lettersState = false;
+
     private static DrumElements drumElements;
     private static Word word;
     private static Letters letters;
     private static Label dialogLabel = new Label();
-    private static  YakubovichAnimation yakubovichAnimation;
+    private static final YakubovichAnimation yakubovichAnimation = new YakubovichAnimation();
     private Timeline timeline;
 
     @FXML
     public void initialize() {
-            yakubovichAnimation = new YakubovichAnimation(this);
-
             Const constants = new Const();
             drumElements = new DrumElements(constants.centerX, constants.centerY, constants.radius);
 
@@ -92,7 +89,7 @@ public class GamePageController {
             wordPlace.setLayoutY(constants.centerY-200);
 
         //Диалог
-        dialog.setContent(setDialogText(wordDefinitionManager.getDefinition()));
+            setDialogText(wordDefinitionManager.getDefinition());
 
         //Панель для барабана
             wheelPane.setPrefSize(constants.centerX * 2, constants.centerY * 2);
@@ -127,9 +124,9 @@ public class GamePageController {
             String text = "Очков на барабане, буква?";
             yakubovichAnimationStart(text);
             wheelState = false;
+            lettersState = true;
             score = Integer.parseInt(animationManager.getSelectedValue());
-            letters.enableButtons();
-            dialog.setContent(setDialogText(String.valueOf(score) + " очков на барабане, ваша буква?"));
+            setDialogText(String.valueOf(score) + " очков на барабане, ваша буква?");
         } catch (NumberFormatException e){
             value = animationManager.getSelectedValue();
         }
@@ -140,14 +137,14 @@ public class GamePageController {
 
         switch (value){
             case "Б":
-                dialog.setContent(setDialogText("Сектор " + String.valueOf(value) + " на барабане, увы, вы банкрот"));
+                setDialogText("Сектор " + String.valueOf(value) + " на барабане, увы, вы банкрот");
                 word.disableWordButtons();
                 value="";
                 break;
 
             case "+":
-                System.out.println("Сектор + на барабане, откройте любую букву");
-                letters.enableButtons();
+                setDialogText("Сектор + на барабане, откройте любую букву в слове");
+                word.enableWordButtons();
                 value="";
                 break;
 
@@ -177,7 +174,7 @@ public class GamePageController {
         }
     }
 
-    public Label setDialogText(String definition) {
+    public void setDialogText(String definition) {
         dialogLabel.setText("");
         dialogLabel.setWrapText(true);
         dialogLabel.setMaxWidth(135);
@@ -195,12 +192,15 @@ public class GamePageController {
                 if(wheelState){
                     circleClickEnable();
                 }
-
+                if(lettersState){
+                    letters.enableButtons();
+                    lettersState = false;
+                }
             }
         }));
         timeline.setCycleCount(definition.length() + 1);
         timeline.play();
-        return dialogLabel;
+        dialog.setContent(dialogLabel);
     }
 
     public void circleClickDisable(){
@@ -223,5 +223,9 @@ public class GamePageController {
 
     public void scrollToBottom() {
         dialog.setVvalue(1.0);
+    }
+
+    public void setLettersState(boolean state) {
+        lettersState = state;
     }
 }

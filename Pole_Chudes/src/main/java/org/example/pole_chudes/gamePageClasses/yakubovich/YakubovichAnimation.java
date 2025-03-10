@@ -18,10 +18,8 @@ public class YakubovichAnimation {
     private static Image state2;
     private Media media;
     private MediaPlayer mediaPlayer;
-    private GamePageController gamePageController;
 
-    public YakubovichAnimation(GamePageController gamePageController) {
-        this.gamePageController = gamePageController;
+    public YakubovichAnimation() {
     }
 
     public void startAnimation(Pane yakubovich, String text) {
