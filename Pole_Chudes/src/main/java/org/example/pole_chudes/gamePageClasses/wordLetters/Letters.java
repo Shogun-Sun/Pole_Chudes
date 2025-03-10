@@ -2,6 +2,7 @@ package org.example.pole_chudes.gamePageClasses.wordLetters;
 
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
+import org.example.pole_chudes.GamePageController;
 import org.example.pole_chudes.gamePageClasses.Const;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.List;
 public class Letters {
     public static List<Button> letterButtons = new ArrayList<>();
     public static List<Boolean> state = new ArrayList<>();
-    public Letters(GridPane lettersGrid, String word) {
+    public Letters(GridPane lettersGrid, String word, GamePageController gamePageController) {
         Const constants = new Const();
 
         int col = 0;
@@ -23,7 +24,7 @@ public class Letters {
             button.setOnAction(event -> {
                 int buttonIndex = letterButtons.indexOf(button);
                 state.set(buttonIndex, true);
-                new ClickLetterAction(button.getText(), word);
+                new ClickLetterAction(button.getText(), word, gamePageController);
                 disableButtons();
             });
             col++;

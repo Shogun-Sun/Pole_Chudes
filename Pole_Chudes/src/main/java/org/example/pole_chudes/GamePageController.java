@@ -22,7 +22,7 @@ import org.example.pole_chudes.gamePageClasses.wordLetters.WordDefinitionManager
 
 public class GamePageController {
     @FXML
-    private Pane wheelPane;
+    public Pane wheelPane;
 
     @FXML
     private GridPane wordPlace;
@@ -61,27 +61,29 @@ public class GamePageController {
     static int scorepla2 = 0;
     static int scorepla3 = 0;
 
+    private static DrumElements drumElements;
     private static Word word;
     private static Letters letters;
     private static Label dialogLabel = new Label();
-    private static  YakubovichAnimation yakubovichAnimation = new YakubovichAnimation();
+    private static  YakubovichAnimation yakubovichAnimation;
     private Duration duration;
-
+    private Timeline timeline;
 
     @FXML
     public void initialize() {
+            yakubovichAnimation = new YakubovichAnimation(this);
+
             Const constants = new Const();
             duration = Duration.seconds(10);
-            yakubovichAnimation.startAnimation(yakubovich, duration);
-
-            DrumElements drumElements = new DrumElements(constants.centerX, constants.centerY, constants.radius);
+            yakubovichAnimationStart(duration);
+            drumElements = new DrumElements(constants.centerX, constants.centerY, constants.radius);
 
             WordDefinitionManager wordDefinitionManager = new WordDefinitionManager();
 
-            UsesDependencies usesDependencies = new UsesDependencies(wheelPane, drumElements, lettersPlace); //labelsLettersCreating
+            UsesDependencies usesDependencies = new UsesDependencies(wheelPane, drumElements, lettersPlace);
 
         //Поле для букв
-        letters = new Letters(lettersPlace, wordDefinitionManager.getWord());
+        letters = new Letters(lettersPlace, wordDefinitionManager.getWord(), this);
         lettersPlace.setLayoutX(0);
         lettersPlace.setLayoutY(constants.centerY+248);
         lettersPlace.setStyle("-fx-max-height: 10px");
@@ -108,7 +110,6 @@ public class GamePageController {
             new SectorTextCreator(constants.numSectors, constants.anglePerSector, constants.centerX, constants.centerY, constants.radius, wheelPane, constants.sectorTexts);
 
             wheelPane.getChildren().add(drumGroup);
-            wheelPane.getChildren().add(drumElements.getCircleClick());
 
             curtainPane.setLayoutY(515);
 
@@ -125,12 +126,12 @@ public class GamePageController {
 
     public void processScore(AnimationManager animationManager) {
         try{
-            String text = "Очков на барабане, ваша буква?";
-            duration = Duration.seconds(4);
-            yakubovichAnimation.startAnimation(yakubovich, duration);
+            String text = "Очков на барабане, буква?";
+            yakubovichAnimationStart(duration);
             score = Integer.parseInt(animationManager.getSelectedValue());
             letters.enableButtons();
             dialog.setContent(setDialogText(String.valueOf(score) + " очков на барабане, ваша буква?"));
+            circleClickDisable();
         } catch (NumberFormatException e){
             value = animationManager.getSelectedValue();
         }
@@ -148,7 +149,7 @@ public class GamePageController {
 
             case "+":
                 System.out.println("Сектор + на барабане, откройте любую букву");
-                letters.disableButtons();
+                letters.enableButtons();
                 value="";
                 break;
 
@@ -179,9 +180,35 @@ public class GamePageController {
     }
 
     public Label setDialogText(String definition) {
-        dialogLabel.setText(definition);
+        dialogLabel.setText("");
         dialogLabel.setWrapText(true);
         dialogLabel.setMaxWidth(135);
+
+        final int[] charIndex = {0};
+        timeline = new Timeline(new KeyFrame(Duration.millis(60), event -> {
+            if (charIndex[0] < definition.length()) {
+                dialogLabel.setText(dialogLabel.getText() + definition.charAt(charIndex[0]));
+                charIndex[0]++;
+            } else {
+                timeline.stop();
+            }
+        }));
+        timeline.setCycleCount(definition.length() + 1);
+        timeline.play();
         return dialogLabel;
+    }
+
+    public void circleClickDisable(){
+        wheelPane.getChildren().remove(drumElements.getCircleClick());
+    }
+
+    public void circleClickEnable(){
+        if (!wheelPane.getChildren().contains(drumElements.getCircleClick())) {
+            wheelPane.getChildren().add(drumElements.getCircleClick());
+        }
+    }
+
+    public void yakubovichAnimationStart(Duration duration) {
+        yakubovichAnimation.startAnimation(yakubovich, duration);
     }
 }

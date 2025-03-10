@@ -6,6 +6,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
+import org.example.pole_chudes.GamePageController;
 import org.example.pole_chudes.gamePageClasses.Const;
 
 import java.io.InputStream;
@@ -22,8 +23,14 @@ public class YakubovichAnimation {
     private Media media;
     private MediaPlayer mediaPlayer;
     private Random random = new Random();
+    private GamePageController gamePageController;
 
-    public void startAnimation(Pane yakubovich, Duration duration) { // Добавляем параметр duration
+    public YakubovichAnimation(GamePageController gamePageController) {
+        this.gamePageController = gamePageController;
+    }
+
+    public void startAnimation(Pane yakubovich, Duration duration) {
+
         Const constants = new Const();
         InputStream inputStream1 = getClass().getResourceAsStream("/org/example/images/stateOne.png");
         InputStream inputStream2 = getClass().getResourceAsStream("/org/example/images/stateTwo.png");
@@ -50,7 +57,7 @@ public class YakubovichAnimation {
         yakubovich.setLayoutY(constants.centerY + 80);
 
         Timeline timeline = new Timeline(
-                new KeyFrame(Duration.millis(random.nextDouble(600) + 400), event -> {
+                new KeyFrame(Duration.millis(random.nextDouble(400) + 300), event -> {
                     if (mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
                         mediaPlayer.stop();
                     }
@@ -67,11 +74,14 @@ public class YakubovichAnimation {
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
 
-        // Добавляем EventHandler для остановки анимации и звука
         KeyFrame stopFrame = new KeyFrame(duration, event -> {
             timeline.stop();
+            gamePageController.circleClickEnable();
             if (mediaPlayer != null) {
                 mediaPlayer.stop();
+            }
+            if (imageView.getImage() == state2) {
+                imageView.setImage(state1);
             }
         });
         Timeline stopTimeline = new Timeline(stopFrame);

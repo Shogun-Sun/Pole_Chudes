@@ -79,7 +79,6 @@ public class AnimationManager {
     public void mouseWheelClick(DrumElements drumElements, Pane wheelPane) {
         drumElements.getCircleClick().setOnMouseClicked(event -> {
             if (!isAnimationRunning && isClickble) {
-//                wheelPane.getChildren().remove(drumElements.getCircleClick());
                 animationStart = random.nextDouble(8, 10);
                 timeline.play();
                 isAnimationRunning = true;
@@ -91,7 +90,6 @@ public class AnimationManager {
         drumElements.getCircleClick().setFocusTraversable(true);
         drumElements.getCircleClick().setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.SPACE && !isAnimationRunning && isClickble) {
-                wheelPane.getChildren().remove(drumElements.getCircleClick());
                 animationStart = random.nextDouble(8, 14);
                 timeline.play();
                 isAnimationRunning = true;
@@ -100,7 +98,6 @@ public class AnimationManager {
     }
 
     public void autoStartAnimation(Pane wheelPane, DrumElements drumElements) {
-        wheelPane.getChildren().remove(drumElements.getCircleClick());
         animationStart = random.nextDouble(8, 14);
         timeline.play();
         isAnimationRunning = true;
