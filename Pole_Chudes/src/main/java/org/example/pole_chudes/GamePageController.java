@@ -20,6 +20,9 @@ import org.example.pole_chudes.gamePageClasses.wordLetters.Letters;
 import org.example.pole_chudes.gamePageClasses.wordLetters.Word;
 import org.example.pole_chudes.gamePageClasses.wordLetters.WordDefinitionManager;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class GamePageController {
     @FXML
     private Pane wheelPane;
@@ -60,20 +63,29 @@ public class GamePageController {
 
     private static boolean wheelState = true;
     private static boolean lettersState = false;
+    private static boolean wordLetterState = false;
 
+    private Queue<String> dialogQueue = new LinkedList<>();
+    private boolean isDialogPlaying = false;
+
+    private static WordDefinitionManager wordDefinitionManager;
+    private static AnimationManager animationManager;
     private static DrumElements drumElements;
     private static Word word;
     private static Letters letters;
     private static Label dialogLabel = new Label();
     private static final YakubovichAnimation yakubovichAnimation = new YakubovichAnimation();
-    private Timeline timeline;
+    private static Timeline timeline;
 
     @FXML
     public void initialize() {
+            pla1.setText(String.valueOf(scorepla1));
+            pla2.setText(String.valueOf(scorepla2));
+            pla3.setText(String.valueOf(scorepla3));
+
             Const constants = new Const();
             drumElements = new DrumElements(constants.centerX, constants.centerY, constants.radius);
-
-            WordDefinitionManager wordDefinitionManager = new WordDefinitionManager();
+            wordDefinitionManager = new WordDefinitionManager();
             yakubovichAnimationStart(wordDefinitionManager.getDefinition());
             UsesDependencies usesDependencies = new UsesDependencies(wheelPane, drumElements, lettersPlace);
 
@@ -84,12 +96,13 @@ public class GamePageController {
         lettersPlace.setStyle("-fx-max-height: 10px");
 
         //Поле для загаданного слова
-            word = new Word(wordPlace, wordDefinitionManager.getWord());
+            word = new Word(wordPlace, wordDefinitionManager.getWord(), this);
             wordPlace.setLayoutX(constants.centerX/2);
             wordPlace.setLayoutY(constants.centerY-200);
 
         //Диалог
             setDialogText(wordDefinitionManager.getDefinition());
+
 
         //Панель для барабана
             wheelPane.setPrefSize(constants.centerX * 2, constants.centerY * 2);
@@ -109,7 +122,7 @@ public class GamePageController {
             curtainPane.setLayoutY(515);
 
         //Анимация
-            AnimationManager animationManager = new AnimationManager(wheelPane, constants.anglePerSector, constants.sectorTexts,
+            animationManager = new AnimationManager(wheelPane, constants.anglePerSector, constants.sectorTexts,
             drumElements);
 
         animationManager.setOnAnimationEnd(() -> {
@@ -119,12 +132,12 @@ public class GamePageController {
             usesDependencies.setAnimationManager(animationManager);
     }
 
+
     public void processScore(AnimationManager animationManager) {
         try{
             String text = "Очков на барабане, буква?";
             yakubovichAnimationStart(text);
             wheelState = false;
-            lettersState = true;
             score = Integer.parseInt(animationManager.getSelectedValue());
             setDialogText(String.valueOf(score) + " очков на барабане, ваша буква?");
         } catch (NumberFormatException e){
@@ -143,8 +156,9 @@ public class GamePageController {
                 break;
 
             case "+":
+                lettersState = false;
                 setDialogText("Сектор + на барабане, откройте любую букву в слове");
-                word.enableWordButtons();
+                wordLetterState = true;
                 value="";
                 break;
 
@@ -168,13 +182,28 @@ public class GamePageController {
                 break;
 
             default:
-                scorepla1 += score;
-                pla1.setText(String.valueOf(scorepla1));
+                    setLettersState(true);
+                    scorepla1 += score;
+                    pla1.setText(String.valueOf(scorepla1));
                 break;
         }
     }
 
     public void setDialogText(String definition) {
+        dialogQueue.add(definition);
+        if (!isDialogPlaying) {
+            playNextDialog();
+        }
+    }
+
+    private void playNextDialog() {
+        if (dialogQueue.isEmpty()) {
+            isDialogPlaying = false;
+            return;
+        }
+
+        isDialogPlaying = true;
+        String definition = dialogQueue.poll();
         dialogLabel.setText("");
         dialogLabel.setWrapText(true);
         dialogLabel.setMaxWidth(135);
@@ -189,15 +218,27 @@ public class GamePageController {
                 circleClickDisable();
             } else {
                 timeline.stop();
-                if(wheelState){
-                    circleClickEnable();
-                }
-                if(lettersState){
+
+                if (lettersState) {
                     letters.enableButtons();
                     lettersState = false;
                 }
+
+                if (wordLetterState) {
+                    word.enableWordButtons();
+                    wordLetterState = false;
+                }
+
+                if (wheelState) {
+                    circleClickEnable();
+                    wheelState = false;
+                }
+
+                isDialogPlaying = false;
+                playNextDialog();
             }
         }));
+
         timeline.setCycleCount(definition.length() + 1);
         timeline.play();
         dialog.setContent(dialogLabel);
@@ -227,5 +268,9 @@ public class GamePageController {
 
     public void setLettersState(boolean state) {
         lettersState = state;
+    }
+
+    public void setWordLetterState(boolean state) {
+        wordLetterState = state;
     }
 }
