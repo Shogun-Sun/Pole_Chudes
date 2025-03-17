@@ -25,7 +25,9 @@ public class Letters {
             button.setDisable(true);
             lettersGrid.add(button, col, row);
             button.setOnAction(event -> {
-                gamePageController.setWheelState(true);
+                GamePageController.setWaitingForSpin(false);
+                GamePageController.setWaitingForLetter(true);
+                GamePageController.setWheelState(true);
                 int buttonIndex = letterButtons.indexOf(button);
                 state.set(buttonIndex, true);
                 new ClickLetterAction(button.getText(), word, gamePageController);
@@ -71,7 +73,7 @@ public class Letters {
             int randomIndex = random.nextInt(availableButtons.size());
             Button randomButton = availableButtons.get(randomIndex);
 
-            gamePageController.setWheelState(false);
+            GamePageController.setWheelState(false);
             state.set(letterButtons.indexOf(randomButton), true);
             new ClickLetterAction(randomButton.getText(), word, gamePageController);
             disableButtons();

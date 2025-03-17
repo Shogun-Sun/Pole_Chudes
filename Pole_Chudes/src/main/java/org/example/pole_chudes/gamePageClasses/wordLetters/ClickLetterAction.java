@@ -1,7 +1,10 @@
 package org.example.pole_chudes.gamePageClasses.wordLetters;
 
+import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.scene.control.Button;
+import javafx.util.Duration;
 import org.example.pole_chudes.GamePageController;
 
 import java.util.ArrayList;
@@ -31,8 +34,16 @@ public class ClickLetterAction {
             int index = random.nextInt(2);
             gamePageController.setDialogText(String.format(dialogs[index], letter));
         } else{
+            gamePageController.switchTurn();
             gamePageController.setDialogText(String.format(dialogs[2], letter));
-            gamePageController.circleClickDisable();
+            if (GamePageController.currentState == GamePageController.GameState.PLAYER) {
+                GamePageController.setWheelState(true);
+            } else if (GamePageController.currentState == GamePageController.GameState.BOT2) {
+                GamePageController.setWheelState(true);
+            }
+
+            GamePageController.setWaitingForLetter(false);
+            GamePageController.setWaitingForSpin(false);
         }
         checkWin(result, word);
     }
@@ -49,13 +60,17 @@ public class ClickLetterAction {
     }
 
     public void checkWin(int result, String word){
-        System.out.println(result);
         if (result == word.length()) {
             for (int i = 0; i < Letters.letterButtons.size(); i++) {
                 Letters.letterButtons.get(i).setDisable(true);
             }
-        gamePageController.circleClickDisable();
+        GamePageController.setWheelState(false);
         gamePageController.setDialogText(dialogs[3]);
+
+            Timeline exitTimeline = new Timeline(new KeyFrame(Duration.seconds(7), event -> {
+                Platform.exit();
+            }));
+            exitTimeline.play();
         }
     }
 }

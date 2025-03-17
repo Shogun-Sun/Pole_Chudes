@@ -20,7 +20,7 @@ import org.example.pole_chudes.gamePageClasses.wordLetters.Letters;
 import org.example.pole_chudes.gamePageClasses.wordLetters.Word;
 import org.example.pole_chudes.gamePageClasses.wordLetters.WordDefinitionManager;
 
-import java.util.LinkedList;
+import java.util.ArrayDeque;
 import java.util.Queue;
 
 public class GamePageController {
@@ -61,12 +61,21 @@ public class GamePageController {
     static int scorepla2 = 0;
     static int scorepla3 = 0;
 
+    private boolean isBotStep = false;
     private static boolean wheelState = true;
-    private static boolean lettersState = false;
     private static boolean wordLetterState = false;
+    private static boolean WAITING_FOR_SPIN = false;
+    private static boolean WAITING_FOR_LETTER = false;
 
-    private Queue<String> dialogQueue = new LinkedList<>();
+    private Queue<String> dialogQueue = new ArrayDeque<>();
     private boolean isDialogPlaying = false;
+
+    public enum GameState{
+        PLAYER,
+        BOT1,
+        BOT2
+    }
+    public static GameState currentState = GameState.PLAYER;
 
     private static WordDefinitionManager wordDefinitionManager;
     private static AnimationManager animationManager;
@@ -79,15 +88,17 @@ public class GamePageController {
 
     @FXML
     public void initialize() {
-            pla1.setText(String.valueOf(scorepla1));
-            pla2.setText(String.valueOf(scorepla2));
-            pla3.setText(String.valueOf(scorepla3));
+        pla1.setText(String.valueOf(scorepla1));
+        pla2.setText(String.valueOf(scorepla2));
+        pla3.setText(String.valueOf(scorepla3));
 
-            Const constants = new Const();
-            drumElements = new DrumElements(constants.centerX, constants.centerY, constants.radius);
-            wordDefinitionManager = new WordDefinitionManager();
-            yakubovichAnimationStart(wordDefinitionManager.getDefinition());
-            UsesDependencies usesDependencies = new UsesDependencies(wheelPane, drumElements, lettersPlace);
+        Const constants = new Const();
+        drumElements = new DrumElements(constants.centerX, constants.centerY, constants.radius);
+        wordDefinitionManager = new WordDefinitionManager();
+        System.out.println(wordDefinitionManager.getWord());
+
+        yakubovichAnimationStart(wordDefinitionManager.getDefinition());
+        UsesDependencies usesDependencies = new UsesDependencies(wheelPane, drumElements, lettersPlace);
 
         //Поле для букв
         letters = new Letters(lettersPlace, wordDefinitionManager.getWord(), this);
@@ -96,70 +107,68 @@ public class GamePageController {
         lettersPlace.setStyle("-fx-max-height: 10px");
 
         //Поле для загаданного слова
-            word = new Word(wordPlace, wordDefinitionManager.getWord(), this);
-            wordPlace.setLayoutX(constants.centerX/2);
-            wordPlace.setLayoutY(constants.centerY-200);
+        word = new Word(wordPlace, wordDefinitionManager.getWord(), this);
+        wordPlace.setLayoutX(constants.centerX/2);
+        wordPlace.setLayoutY(constants.centerY-200);
 
         //Диалог
-            setDialogText(wordDefinitionManager.getDefinition());
-
+        setDialogText(wordDefinitionManager.getDefinition());
 
         //Панель для барабана
-            wheelPane.setPrefSize(constants.centerX * 2, constants.centerY * 2);
+        wheelPane.setPrefSize(constants.centerX * 2, constants.centerY * 2);
 
-            Group drumGroup = new Group();
-            drumGroup.getChildren().addAll(drumElements.getCircleMiddle(), drumElements.getCircleBorder());
-            arrowPane.getChildren().addAll(drumElements.getArrowLine(), drumElements.getArrowHead());
+        Group drumGroup = new Group();
+        drumGroup.getChildren().addAll(drumElements.getCircleMiddle(), drumElements.getCircleBorder());
+        arrowPane.getChildren().addAll(drumElements.getArrowLine(), drumElements.getArrowHead());
 
         //Создание секторов
-            new SectorsCreating(constants.numSectors, constants.centerX, constants.centerY, constants.radius, constants.anglePerSector, wheelPane);
+        new SectorsCreating(constants.numSectors, constants.centerX, constants.centerY, constants.radius, constants.anglePerSector, wheelPane);
 
         //Создание текста на секторах
-            new SectorTextCreator(constants.numSectors, constants.anglePerSector, constants.centerX, constants.centerY, constants.radius, wheelPane, constants.sectorTexts);
+        new SectorTextCreator(constants.numSectors, constants.anglePerSector, constants.centerX, constants.centerY, constants.radius, wheelPane, constants.sectorTexts);
 
-            wheelPane.getChildren().add(drumGroup);
+        wheelPane.getChildren().add(drumGroup);
 
-            curtainPane.setLayoutY(515);
+        curtainPane.setLayoutY(515);
 
         //Анимация
-            animationManager = new AnimationManager(wheelPane, constants.anglePerSector, constants.sectorTexts,
-            drumElements);
+        animationManager = new AnimationManager(wheelPane, constants.anglePerSector, constants.sectorTexts,
+                drumElements);
 
         animationManager.setOnAnimationEnd(() -> {
             processScore(animationManager);
-            });
+            setWaitingForSpin(true);
+        });
 
-            usesDependencies.setAnimationManager(animationManager);
+        usesDependencies.setAnimationManager(animationManager);
     }
 
-
     public void processScore(AnimationManager animationManager) {
-        try{
+        try {
             String text = "Очков на барабане, буква?";
             yakubovichAnimationStart(text);
             wheelState = false;
             score = Integer.parseInt(animationManager.getSelectedValue());
             setDialogText(String.valueOf(score) + " очков на барабане, ваша буква?");
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             value = animationManager.getSelectedValue();
         }
 
-        if(value == null){
+        if (value == null) {
             value = "";
         }
 
-        switch (value){
+        switch (value) {
             case "Б":
                 setDialogText("Сектор " + String.valueOf(value) + " на барабане, увы, вы банкрот");
                 word.disableWordButtons();
-                value="";
+                value = "";
                 break;
 
             case "+":
-                lettersState = false;
                 setDialogText("Сектор + на барабане, откройте любую букву в слове");
                 wordLetterState = true;
-                value="";
+                value = "";
                 break;
 
             case "\uD83D\uDDDD":
@@ -169,8 +178,7 @@ public class GamePageController {
                 break;
 
             case "x2":
-                scorepla1 = scorepla1 * 2;
-                pla1.setText(String.valueOf(scorepla1));
+                multiplyScore();
                 value = "";
                 score = 0;
                 break;
@@ -182,9 +190,51 @@ public class GamePageController {
                 break;
 
             default:
-                    setLettersState(true);
-                    scorepla1 += score;
-                    pla1.setText(String.valueOf(scorepla1));
+                addScore();
+                break;
+        }
+
+        if(isBotStep){
+            Timeline delay = new Timeline(new KeyFrame(Duration.seconds(7), event -> {
+                letters.pressRandomButton(wordDefinitionManager.getWord(), this);
+                isBotStep = false;
+                moveTurn();
+            }));
+            delay.play();
+        }
+
+    }
+
+    private void addScore() {
+        switch (currentState) {
+            case GameState.PLAYER:
+                scorepla1 += score;
+                pla1.setText(String.valueOf(scorepla1));
+                break;
+            case GameState.BOT1:
+                scorepla2 += score;
+                pla2.setText(String.valueOf(scorepla2));
+                break;
+            case GameState.BOT2:
+                scorepla3 += score;
+                pla3.setText(String.valueOf(scorepla3));
+                break;
+        }
+    }
+
+    private void multiplyScore() {
+        switch (currentState) {
+            case GameState.PLAYER:
+                scorepla1 *= 2;
+                pla1.setText(String.valueOf(scorepla1));
+                break;
+            case GameState.BOT1:
+                scorepla2 *= 2;
+                pla2.setText(String.valueOf(scorepla2));
+                break;
+            case GameState.BOT2:
+                scorepla3 *= 2;
+                pla3.setText(String.valueOf(scorepla3));
                 break;
         }
     }
@@ -219,20 +269,7 @@ public class GamePageController {
             } else {
                 timeline.stop();
 
-                if (lettersState) {
-                    letters.enableButtons();
-                    lettersState = false;
-                }
-
-                if (wordLetterState) {
-                    word.enableWordButtons();
-                    wordLetterState = false;
-                }
-
-                if (wheelState) {
-                    circleClickEnable();
-                    wheelState = false;
-                }
+                moveTurn();
 
                 isDialogPlaying = false;
                 playNextDialog();
@@ -246,6 +283,7 @@ public class GamePageController {
 
     public void circleClickDisable(){
         wheelPane.getChildren().remove(drumElements.getCircleClick());
+
     }
 
     public void circleClickEnable(){
@@ -258,7 +296,7 @@ public class GamePageController {
         yakubovichAnimation.startAnimation(yakubovich, text);
     }
 
-    public void setWheelState(boolean state) {
+    public static void setWheelState(boolean state) {
         wheelState = state;
     }
 
@@ -266,11 +304,75 @@ public class GamePageController {
         dialog.setVvalue(1.0);
     }
 
-    public void setLettersState(boolean state) {
-        lettersState = state;
-    }
-
-    public void setWordLetterState(boolean state) {
+    public static void setWordLetterState(boolean state) {
         wordLetterState = state;
     }
+
+    public static void setWaitingForSpin(boolean state){
+        WAITING_FOR_SPIN = state;
+    }
+
+    public static void setWaitingForLetter(boolean waitingForLetter) {
+        WAITING_FOR_LETTER = waitingForLetter;
+    }
+
+    public void switchTurn(){
+        switch (currentState){
+            case GameState.PLAYER:
+                currentState = GameState.BOT1;
+                break;
+
+            case GameState.BOT1:
+                currentState = GameState.BOT2;
+                break;
+
+            case GameState.BOT2:
+                currentState = GameState.PLAYER;
+                break;
+            }
+    }
+
+    private void moveTurn(){
+        if(isBotStep){
+            return;
+        }
+
+        switch (currentState){
+            case GameState.PLAYER:
+                playerTurn();
+                break;
+
+            case GameState.BOT1, GameState.BOT2:
+                botTurn();
+                break;
+        }
+        if (wordLetterState) {
+            word.enableWordButtons();
+            wordLetterState = false;
+        }
+    }
+
+    private void botTurn() {
+        if (!isBotStep) {
+            isBotStep = true;
+            if(currentState != GameState.PLAYER) {
+                    animationManager.autoStartAnimation(wheelPane, drumElements);
+            }
+        }
+    }
+
+    private void playerTurn() {
+        if(wheelState){
+            circleClickEnable();
+        } else{
+            circleClickDisable();
+        }
+
+        if(WAITING_FOR_SPIN){
+            letters.enableButtons();
+        } else{
+            letters.disableButtons();
+        }
+    }
+
 }

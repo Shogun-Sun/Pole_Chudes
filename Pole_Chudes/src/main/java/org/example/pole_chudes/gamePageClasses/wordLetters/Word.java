@@ -12,7 +12,6 @@ public class Word {
     public static List<Button> word_buttons = new ArrayList<>();
 
     public Word(GridPane wordPlace, String word, GamePageController gamePageController) {
-        System.out.println(word);
         int col = 0;
         int row = 0;
         for(int i = 0; i < word.length(); i++){
