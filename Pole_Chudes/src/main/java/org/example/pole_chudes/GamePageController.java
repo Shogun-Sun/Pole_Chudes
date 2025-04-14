@@ -66,6 +66,8 @@ public class GamePageController {
     private static boolean wordLetterState = false;
     private static boolean WAITING_FOR_SPIN = false;
     private static boolean WAITING_FOR_LETTER = false;
+    private boolean onBotWaitingForDialogEndChoseLetter = false;
+    private boolean onBotWaitingForDialogEndDrumAnimation = false;
 
     private Queue<String> dialogQueue = new ArrayDeque<>();
     private boolean isDialogPlaying = false;
@@ -194,13 +196,8 @@ public class GamePageController {
                 break;
         }
 
-        if(isBotStep){
-            Timeline delay = new Timeline(new KeyFrame(Duration.seconds(7), event -> {
-                letters.pressRandomButton(wordDefinitionManager.getWord(), this);
-                isBotStep = false;
-                moveTurn();
-            }));
-            delay.play();
+        if(isBotStep) {
+            onBotWaitingForDialogEndChoseLetter = true;
         }
 
     }
@@ -249,6 +246,27 @@ public class GamePageController {
     private void playNextDialog() {
         if (dialogQueue.isEmpty()) {
             isDialogPlaying = false;
+
+            if (onBotWaitingForDialogEndChoseLetter) {
+                onBotWaitingForDialogEndChoseLetter = false;
+
+                Timeline delay = new Timeline(new KeyFrame(Duration.seconds(1.5), event -> {
+                    letters.pressRandomButton(wordDefinitionManager.getWord(), this);
+                    isBotStep = false;
+                    moveTurn();
+                }));
+                delay.play();
+            }
+
+            if(onBotWaitingForDialogEndDrumAnimation) {
+                onBotWaitingForDialogEndDrumAnimation = false;
+
+                Timeline delay = new Timeline(new KeyFrame(Duration.seconds(0.5), event -> {
+                    animationManager.autoStartAnimation(wheelPane, drumElements);
+                }));
+                delay.play();
+            }
+
             return;
         }
 
@@ -356,7 +374,7 @@ public class GamePageController {
         if (!isBotStep) {
             isBotStep = true;
             if(currentState != GameState.PLAYER) {
-                    animationManager.autoStartAnimation(wheelPane, drumElements);
+                    onBotWaitingForDialogEndDrumAnimation = true;
             }
         }
     }

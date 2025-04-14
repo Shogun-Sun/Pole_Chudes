@@ -98,9 +98,9 @@ public class AnimationManager {
     }
 
     public void autoStartAnimation(Pane wheelPane, DrumElements drumElements) {
-        animationStart = random.nextDouble(8, 14);
-        timeline.play();
-        isAnimationRunning = true;
+            animationStart = random.nextDouble(8, 14);
+            timeline.play();
+            isAnimationRunning = true;
     }
 
     public void setOnAnimationEnd(Runnable onAnimationEnd) {

@@ -14,7 +14,7 @@ import java.util.Random;
 public class ClickLetterAction {
     public static int result = 0;
     private boolean letterGuessed = false;
-    private String[] dialogs = {"Откройте букву %s", "Вы абсолютно правы! Откройте букву %s", "К сожалению вы ошиблись, в слове нет буквы %s", "И у нас есть победитель!"};
+    private String[] dialogs = {"Откройте букву <<%s>>", "Вы абсолютно правы! Откройте букву <<%s>>", "К сожалению вы ошиблись, в слове нет буквы <<%s>>", "И у нас есть победитель!"};
     private Random random = new Random();
     private GamePageController gamePageController;
 
